@@ -46,7 +46,7 @@ public class King extends Piece {
         int desX = pos.getX();
         int dexY = pos.getY();
         int myX = position.getX();
-        int myY = poso
+        int myY = position.getY();
     }
 
     public void castle(Position targetPosition) {
