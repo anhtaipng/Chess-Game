@@ -131,9 +131,9 @@ public class Pawn extends Piece {
     @Override
     public void update(Board board, MoveInfo move, boolean isRedoMove) {
         if (isRedoMove) {
-            if (move.getTurn() <= enPassanableTurn) {
-                enPassanableTurn = -1;
-                canBeEnpassanted = false;
+            if (move.getTurn() == enPassanableTurn) {
+                enPassanableTurn = move.getTurn();
+                canBeEnpassanted = true;
             }
         } else {
             try {
@@ -143,7 +143,7 @@ public class Pawn extends Piece {
                         canBeEnpassanted = true;
                         enPassanableTurn = move.getTurn();
                     } else {
-                        canEnPassant = position.getX() == startPos.getX() && (Math.abs(endY - startPos.getY()) == 4);
+                        canEnPassant =  (Math.abs(endY - startPos.getY()) == 3);
                     }
                 } else {
                     canBeEnpassanted = false;
@@ -153,5 +153,24 @@ public class Pawn extends Piece {
             }
 
         }
+        if(!isRedoMove){
+            try{
+                if(move.getStartPosition() == this.position){
+                    this.position = move.getEndPosition();
+                }
+            } catch (InvalidPositionFormatException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Pawn{" +
+                "canEnPassant=" + canEnPassant +
+                ", canBeEnpassanted=" + canBeEnpassanted +
+                ", enPassanableTurn=" + enPassanableTurn +
+                ", startPos=" + startPos +
+                '}';
     }
 }

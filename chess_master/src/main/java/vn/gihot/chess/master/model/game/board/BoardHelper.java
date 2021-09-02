@@ -81,7 +81,7 @@ public class BoardHelper {
                 int y_diff = x1 + y1 - x;
                 res.add(BoardHelper.getPosFromCoord(x, y_diff));
             }
-        } else if (Math.abs(x1 - y1) == Math.abs(x2 - y2)) {
+        } else if ((x1 - y1) == (x2 - y2)) {
             int diagonalConst = Math.abs(x1 - y1);
             boolean negativeDig = x2 - y2 < 0;
             Pair<Integer, Integer> loopIndexes = getSortedPairForLoop(x1, x2);

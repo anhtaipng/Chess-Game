@@ -44,9 +44,10 @@ public class King extends Piece {
     @Override
     public boolean canReachTo(Position pos) {
         int desX = pos.getX();
-        int dexY = pos.getY();
+        int desY = pos.getY();
         int myX = position.getX();
         int myY = position.getY();
+        return Math.abs(desX - myX) <= 1 && (Math.abs(desY - myY)) <= 1;
     }
 
     public void castle(Position targetPosition) {

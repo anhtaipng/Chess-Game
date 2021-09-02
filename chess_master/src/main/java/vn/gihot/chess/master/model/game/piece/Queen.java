@@ -24,7 +24,8 @@ public class Queen extends Piece{
 
     @Override
     public boolean canReachTo(Position pos) {
-        return board.connectedByFirstDiagonal(this.position, pos) || board.connectedBySecondDiagonal(position, pos) || board.connectedByHorizontalLine(position,pos) ||board.connectedByVerticalLine(position,pos);
+        return board.connectedByFirstDiagonal(this.position, pos) || board.connectedBySecondDiagonal(position, pos) ||
+                board.connectedByHorizontalLine(position,pos) ||board.connectedByVerticalLine(position,pos);
     }
 
     @Override

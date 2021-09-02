@@ -127,6 +127,17 @@ public class ClassicBoard extends Board {
 
         return GameEndType.NOT_END_YET;
     }
+
+    @Override
+    public void clearBoard() {
+        whitePieces.clear();
+        capturedWhitePieces.clear();
+        blackPieces.clear();
+        capturedBlackPieces.clear();
+        occupiedPositions.clear();
+        moveStack.clear();
+    }
+
     // Check for draw by three-fold-repetition:
     public boolean checkForThreeFoldRep(){
         Integer currentState = this.hashCode();
@@ -283,7 +294,7 @@ public class ClassicBoard extends Board {
             if(!moveStack.isEmpty()){
                 int prevMoveTurn = moveStack.get(moveStack.size() - 1).getTurn();
                 int thisMoveTurn = move.getTurn();
-                if (prevMoveTurn != thisMoveTurn - 1) throw new UnSyncedMoveTurnException(prevMoveTurn, thisMoveTurn);
+                if (prevMoveTurn != thisMoveTurn - 1) throw new UnSyncedMoveTurnException(prevMoveTurn + 1, thisMoveTurn);
             }
             Type royalty = move.getPlayerType();
             Type enemyRoyalty = move.getOpponentType();
@@ -317,11 +328,12 @@ public class ClassicBoard extends Board {
             } else {
                 pickThenPlacePiece(pieceMoved, endPos, move.getTurn());
             }
-            notifyObservers();
         } catch (Exception e) {
             e.printStackTrace();
         }
         // If move is successful --> Notify the pieces so they can update their own metadata.
+        moveStack.add(move);
+        this.gameEndType = checkEndGame();
         notifyObservers();
     }
 
@@ -422,7 +434,7 @@ public class ClassicBoard extends Board {
                     throw new IllegalMoveException("Captured pawn can not be En-Passant");
             } else if (move.getPromoting()) {
                 Pawn promotedPawn = (Pawn) pieceMoved;
-                if ((Math.abs(endPos.getY() - promotedPawn.getStartPos().getY()) != 6) || occupiedPositions.containsKey(endPos))
+                if ((Math.abs(endPos.getY() - promotedPawn.getStartPos().getY()) != 6))
                     throw new IllegalMoveException("Pawn doesn't satisfy promote condition");
             }
         } catch (Exception e) {
@@ -471,6 +483,7 @@ public class ClassicBoard extends Board {
     public void addPiece(String pieceClass, Type type, Position pos) {
         Piece piece = pieceFactory.createPiece(pieceClass, type, pos, this);
         this.occupiedPositions.put(pos, piece);
+        this.registerObserver(piece);
         if (type == Type.WHITE) {
             whitePieces.add(piece);
         } else {

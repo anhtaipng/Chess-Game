@@ -152,6 +152,22 @@ public class BoardHelperClassUnitTest {
                         BoardHelper.getPosFromCoord(8, 7))
         );
     }
+    @Test
+    @DisplayName("Test get connected positions: Second Diagonal 1")
+    void testBetween40() {
+        ArrayList<Position> expectedPosList = new ArrayList<>();
+        expectedPosList.add(BoardHelper.getPosFromCoord(2, 1));
+        expectedPosList.add(BoardHelper.getPosFromCoord(3, 2));
+        expectedPosList.add(BoardHelper.getPosFromCoord(4, 3));
+        expectedPosList.add(BoardHelper.getPosFromCoord(5, 4));
+        expectedPosList.add(BoardHelper.getPosFromCoord(6, 5));
+        expectedPosList.add(BoardHelper.getPosFromCoord(7, 6));
+        expectedPosList.add(BoardHelper.getPosFromCoord(8, 7));
+        Assertions.assertEquals(expectedPosList,
+                BoardHelper.getConnectedPositionBetweenPos(BoardHelper.getPosFromCoord(2, 1),
+                        BoardHelper.getPosFromCoord(8, 7))
+        );
+    }
 
     @Test
     @DisplayName("Convert CharNum Position Notation to NumNum Notation")

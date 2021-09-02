@@ -15,6 +15,7 @@ public abstract class Piece implements ChessObserver {
     public static final String BISHOP = "B";
 
     Board board;
+//    protected String pieceCode;
     protected Type type;
     protected Position position;
     public int capturedOnMove;
@@ -53,4 +54,5 @@ public abstract class Piece implements ChessObserver {
                 ", position=" + position +
                 '}';
     }
+
 }

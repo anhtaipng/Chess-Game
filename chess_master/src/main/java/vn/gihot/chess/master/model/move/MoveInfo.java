@@ -18,12 +18,14 @@ import vn.gihot.chess.master.model.game.piece.Type;
 
    NOTE: camelCase methods will return the information converted to some other type
          snake_case methods will return the information as string (The same as it is stored);
+         the actual move info stored is: 1.White player 2.Black Player 3.White Player 4.Player
+         (For ease of redo and checking en-passant conditoin)
 */
 
 public class MoveInfo {
     public static String WHITE_PLAYER ="white";
     public static String BLACK_PLAYER ="black";
-    private String turn;
+    private final String turn;
     private final String player;
     private final String piece_moved;
     private final String piece_start_pos;
@@ -42,18 +44,6 @@ public class MoveInfo {
         this.castling = castling;
         this.promoting = promoting;
         this.promotedClass = promotedClass;
-        this.en_passant = en_passant;
-    }
-
-    public MoveInfo(String player, String piece_moved, String piece_start_pos, String piece_end_pos, String castling, String promoting, String promotedClass, String en_passant) {
-        this.player = player;
-        this.piece_moved = piece_moved;
-        this.piece_start_pos = piece_start_pos;
-        this.piece_end_pos = piece_end_pos;
-        this.castling = castling;
-        this.promoting = promoting;
-        this.promotedClass = promotedClass;
-
         this.en_passant = en_passant;
     }
 
