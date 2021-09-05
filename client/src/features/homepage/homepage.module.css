@@ -1,0 +1,57 @@
+@import url("../../reset.css");
+@import url("../../App.css");
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital@0;1&display=swap');.landingContainer {
+    display: flex;
+    flex-direction: row;
+    font-family: 'Montserrat', sans-serif;
+}
+/* The left part of the introduction landing page (Slogan + Intro)*/
+.chessHooker{
+    flex-grow: 4;
+}
+.slogan{
+    font-weight: 600;
+    font-size: 4em;
+    text-align: left;
+    margin: 0.5em 0.5em;
+}
+.introductionText{
+    color: black;
+    font-size: larger;
+    margin: 1em 2em;
+    text-align: left;
+}
+
+.diveInResources{
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    justify-items: center;
+    align-items: center;
+    margin: 2.8em 2em;
+}
+.diveInResources button {
+    border: none;
+    cursor: pointer;
+    outline: none;
+    padding: 14px 16px;
+    font-size: 1.3em;
+}
+.learnChessButton{
+    background: var(--primary-color);
+    color: var(--secondary-color);
+}
+.learnChessButton:hover{
+    background: var(--button-primary-hover-color);
+    color: var(--secondary-color);}
+
+.watchChessButton{
+   background-color: #f3c348;
+}
+.watchChessButton:hover{
+   background-color: var(--button-secondary-hover-color);
+}
+/* The right part (The image) */
+.gameReviewImage{
+    flex-grow: 6;
+}
