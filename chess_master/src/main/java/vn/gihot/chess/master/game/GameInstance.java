@@ -13,7 +13,7 @@ import vn.gihot.chess.master.model.room.Room;
 /*
     Contain meta-data about 1 specific game:
     + The game view
-    + The game controller: This is the Game Instance Class itself
+    + The game controller: This is the GameBoard Instance Class itself
     + The game model
     Waiting for Duy Thanh code database specification to signal engame and store history + Analysis
  */

@@ -3,7 +3,7 @@ import './App.css';
 import Header from "./features/header/Header";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import {HomePage} from "./features/homepage/HomePage";
-import Game from "./features/chessgame/Game";
+import GameBoard from "./features/chessgame/GameBoard";
 import {useSelector} from "react-redux";
 import {UserConstant} from "./slices/user/userSlice";
 import LoginForm from "./features/forms/LoginForm";
@@ -32,7 +32,7 @@ const renderSwitch = (login_status)=> {
                             {/* Render Home Element: Some beautiful main page */}
                             {/* <Home className="main-content"></Home> */}
                         </Route>
-                        <Route exact path="/game/:game_id" component={Game}>
+                        <Route exact path="/game/:game_id" component={GameBoard}>
                             {/* Render major incoming updates from Better Messenger */}
                             {/* <Announcement className="main-content"></Announcement> */}
                         </Route>

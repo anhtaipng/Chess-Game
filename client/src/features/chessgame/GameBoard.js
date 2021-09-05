@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Game = () => {
+const GameBoard = () => {
     return (
         <div>
 
@@ -8,4 +8,4 @@ const Game = () => {
     );
 };
 
-export default Game;
+export default GameBoard;

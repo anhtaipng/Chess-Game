@@ -17,7 +17,6 @@ import vn.gihot.chess.authenticate.model.User;
 import vn.gihot.chess.authenticate.service.JwtUserDetailsService;
 
 @RestController
-@CrossOrigin//Allow client in another domain call this api
 public class JwtAuthenticationController {
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -36,12 +35,14 @@ public class JwtAuthenticationController {
 //    }
 
     //handle POST register
+    @CrossOrigin
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ResponseEntity<?> saveUser(@RequestBody User user) throws Exception {
         return ResponseEntity.ok(userDetailsService.saveToDB(user));
     }
 
     //handle POST
+    @CrossOrigin
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
 

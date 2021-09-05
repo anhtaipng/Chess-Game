@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import styles from './form.module.css';
 import {useDispatch, useSelector} from "react-redux";
-import {loginUser, UserConstant} from "../../slices/user/userSlice";
+import {loginUser, registerUser, UserConstant} from "../../slices/user/userSlice";
 import Loader from 'react-loader-spinner';
 import DismissableAlert from "../alert/DismissableAlert";
 
@@ -12,7 +12,14 @@ const LoginForm = props => {
     const logginState = useSelector(state => state.user.login_status);
     const handleSubmit = (e) =>{
         e.preventDefault();
-        dispatch(loginUser({username,password}));
+        try{
+            const requestResult = dispatch(loginUser({username, password})).unwrap();
+            const testRealResult = async () => await requestResult;
+            console.log("regResult:",testRealResult().token);
+        }
+        catch (error){
+            console.log("ERROR at Register asd:",error);
+        }
     }
     return (
         <section className={styles.section}>

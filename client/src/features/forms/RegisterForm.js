@@ -44,14 +44,11 @@ const RegisterForm =  (props) => {
         dispatch('validate_ok');
         // If validate ok
         try{
-            const requestResult = await dispatchToStore(registerUser({username, password})).unwrap();
-            if(!requestResult){
-                dispatch(registerUser.rejected);
-            }
+            const requestResult = dispatchToStore(registerUser({username, password})).unwrap();
             console.log("regResult:",requestResult);
         }
         catch (error){
-            console.log("ERROR at Register:",error);
+            console.log("ERROR at Register asd:",error);
         }
 
     }

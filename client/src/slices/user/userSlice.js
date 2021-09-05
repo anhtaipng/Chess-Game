@@ -76,13 +76,9 @@ export const loginUser = createAsyncThunk(
     async (userInfo,{ rejectWithValue } ) =>{
         try{
             const response = await login(userInfo);
-            if (!response.ok) {
-                return rejectWithValue("FAILED REGISTER");
-            }
             return response.data;
-        }
-        catch (err){
-            return rejectWithValue(err.response.data);
+        } catch (error) {
+            return rejectWithValue({ error: error.message });
         }
     }
 )
@@ -90,16 +86,12 @@ export const registerUser = createAsyncThunk(
     "user/registerUser",
     async(userInfo,{ rejectWithValue }) => {
         try{
-            const response = await register(userInfo);
+            const response = await login(userInfo);
             console.log("INSDIE REG THUNK:", response);
-            if (!response.ok) {
-                return rejectWithValue("FAILED REGISTER");
-            }
-            console.log("REG_RETURNED:", response.data);
             return response.data;
         }
         catch (err){
-            return rejectWithValue(err.response.data);
+            return rejectWithValue(err);
         }
     }
 )
@@ -179,8 +171,10 @@ export const userSlice = createSlice({
             })
             .addCase(loginUser.fulfilled,(state,action)=>{
                 state.login_status = UserConstant.LOGGED_IN;
-                let newUser = action.payload;
-                state = {...state, ...newUser};
+                // let newUser = action.payload;
+                // state = {...state, ...newUser};
+                console.log("login fullfill:", action);
+                state.move_token = action.payload.token;    
             })
             .addCase(loginUser.rejected,(state,action)=>{
                 state.login_status = UserConstant.LOGGED_IN_FAILED;
