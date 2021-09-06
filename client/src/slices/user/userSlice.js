@@ -174,7 +174,7 @@ export const userSlice = createSlice({
                 // let newUser = action.payload;
                 // state = {...state, ...newUser};
                 console.log("login fullfill:", action);
-                state.move_token = action.payload.token;    
+                state.move_token = action.payload.token;
             })
             .addCase(loginUser.rejected,(state,action)=>{
                 state.login_status = UserConstant.LOGGED_IN_FAILED;
