@@ -51,6 +51,7 @@ export class Pawn extends Piece {
     constructor(royalty) {
         super(PIECE_CONSTANT.PAWN, royalty, royalty === PIECE_CONSTANT.BLACK_ROYALTY ? blackPawnImg : whitePawnImg);
         this.canEnpassent = false;
+        this.doubledMoved = false;
     }
     canBeEnpassented(pos2){
         if (this.royalty === PIECE_CONSTANT.BLACK_ROYALTY) {
@@ -65,6 +66,12 @@ export class Pawn extends Piece {
     canMoveTo(pos1, pos2, pieces) {
         const pos2hash = BoardHelper.getHashCodeFromPos(pos2);
         if (this.royalty === PIECE_CONSTANT.WHITE_ROYALTY) {
+            if(!this.doubleMoved){
+                if((pos2.y === pos1.y +2) && (pos2.x === pos1.x)){
+                    this.doubledMoved = true;
+                    return true;
+                }
+            }
             if (pos2.y !== pos1.y + 1) return false;
             if (pieces.has(pos2hash)) {
                 const piece = pieces.get(pos2hash);
@@ -84,6 +91,12 @@ export class Pawn extends Piece {
                 // Check normal Move
             }
         } else {
+            if(!this.doubleMoved){
+                if((pos2.y === pos1.y -2) && (pos2.x === pos1.x)){
+                    this.doubledMoved = true;
+                    return true;
+                }
+            }
             if (pos2.y !== pos1.y - 1) return false;
             if (pieces.has(pos2hash)) {
                 const piece = pieces.get(pos2hash);
@@ -129,6 +142,7 @@ export class Bishop extends Piece {
     }
 
     canMoveTo(pos1, pos2, pieces) {
+        console.log("bishop move:", pos1, pos2);
         if (pieces.has(BoardHelper.getHashCodeFromPos(pos2))) {
             const piece1 = pieces.get(BoardHelper.getHashCodeFromPos(pos1));
             const piece2 = pieces.get(BoardHelper.getHashCodeFromPos(pos2));
@@ -184,6 +198,7 @@ export class King extends Piece {
             const piece1 = pieces.get(BoardHelper.getHashCodeFromPos(pos1));
             const piece2 = pieces.get(BoardHelper.getHashCodeFromPos(pos2));
             if (piece2.royalty === piece1.royalty) {
+                console.log("King check genocide:",piece1.royalty,piece2.royalty);
                 return false;
             }
         }

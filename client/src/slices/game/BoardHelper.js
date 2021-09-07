@@ -35,7 +35,7 @@ const BoardHelper = (() => {
     }
     // return a hash code from pos {x,y}
     function getPosFromHashCode(hash){
-        return {x:Math.floor(hash/10),y:hash%10};
+        return {y:Math.floor(hash/10),x:hash%10};
     }
     function comparesPosEqual(posObject1,posObject2){
         return posObject1.x === posObject2.x || posObject1.y === posObject2.y;
@@ -61,14 +61,14 @@ const BoardHelper = (() => {
 
     // pos1 and pos2 shoudl be in NumNum
     function isConnectedByLine(pos1, pos2) {
-        const {x: srcX, y: srcY} = getPosObjectFromNumNum(pos1);
-        const {x: destX, y: destY} = getPosObjectFromNumNum(pos2);
+        const {x: srcX, y: srcY} = pos1;
+        const {x: destX, y: destY} = pos2;
         return srcX === destX || srcY === destY;
     }
 
     function isConnectedByDiagonal(pos1, pos2) {
-        const {x: srcX, y: srcY} = getPosObjectFromNumNum(pos1);
-        const {x: destX, y: destY} = getPosObjectFromNumNum(pos2);
+        const {x: srcX, y: srcY} = pos1;
+        const {x: destX, y: destY} = pos2;
         return srcX + srcY === destX + destY || (srcX - srcY === destX - destY);
     }
 
@@ -76,8 +76,8 @@ const BoardHelper = (() => {
     // pos1 and po2 should also be numnum
     function getSpotsBetweenTwoPos(pos1, pos2) {
         const spots = [];
-        const {x: x1, y: y1} = getPosObjectFromNumNum(pos1);
-        const {x: x2, y: y2} = getPosObjectFromNumNum(pos2);
+        const {x: x1, y: y1} = pos1;
+        const {x: x2, y: y2} = pos2;
         if (x1 === x2) {
             const {min, max} = getMinMax(y1, y2);
             for (let i = min + 1; i < max; i++) {
@@ -94,7 +94,7 @@ const BoardHelper = (() => {
             const diag_const = x1 + y1;
             for(let x = min + 1; x< max;x++){
                 let y_diff = diag_const - x;
-                spots.add({x:x,y:y_diff});
+                spots.push ({x:x,y:y_diff});
             }
         }
         else if ((x1 - y1) === (x2 - y2)) {
@@ -164,11 +164,14 @@ const BoardHelper = (() => {
         if (!pieces.has(getHashCodeFromPos(pos))) {
             throw new Error("No pieces is at Pos");
         }
-        return pieces.get(pos);
+        console.log("At getPieceAtPos,returned pieces is:",pieces.get(getHashCodeFromPos(pos)));
+        return pieces.get(getHashCodeFromPos(pos));
     }
     // check move validity:
     function checkMoveValidity(pos1,pos2,pieces){
+        console.log(`checking ${pos1.toString()} can move to ${pos2.toString()}`,pos1,pos2);
         const p = getPieceAtPos(pos1, pieces);
+        console.log("Pawn checkging move can execute:",p.canMoveTo(pos1, pos2, pieces));
         return p.canMoveTo(pos1, pos2, pieces);
     }
     return {checkIfKingIsChecked,checkCleanPath,isConnectedByDiagonal,isConnectedByLine,isConnectedByKingMove,

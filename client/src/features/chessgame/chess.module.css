@@ -1,32 +1,44 @@
 @import url('../../reset.css');
 
 .boardContainer{
-    width: 600px;
-    height: 600px;
+    width: 800px;
+    height: 800px;
     margin: 0 auto;
     background-color: #34495e;
     color: #fff;
-    border: 6px solid #2c3e50;
+    border: 10px solid #2c3e50;
     border-radius: 10px;
 }
 .boardGrid {
+    width: 800px;
+    height: 800px;
     display: grid;
     grid-template: repeat(8, 1fr)/repeat(8, 1fr);
-    margin: 0 auto;
 }
 .square{
-    border: 6px solid #2c3e50;
-    border-radius: 2px;
-    font-family: Helvetica, serif;
-    font-weight: bold;
-    font-size: 4em;
+    /*border: 6px solid #2c3e50;*/
+    /*border-radius: 2px;*/
+    /*font-family: Helvetica, serif;*/
+    /*font-weight: bold;*/
+    /*font-size: 4em;*/
     display: flex;
     justify-content: center;
     align-items: center;
+    margin: 1px;
 }
 .lightSquare{
-
+    background-color: cornsilk;
+    background-size: contain;
+}
+.lightSquare:focus{
+    background-color: #5f93ea;
+    background-size: contain;
 }
 .darkSquare{
-
+    background-color: #2f2f31;
+    background-size: contain;
+}
+.darkSquare:focus{
+    background-color: #4d4dee;
+    background-size: contain;
 }

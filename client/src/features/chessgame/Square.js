@@ -7,16 +7,10 @@ import {useSelector} from "react-redux";
 const isEven= (num) => num%2 === 0;
 
 const Square = (props) => {
-    const thisSpotHashCode = props.posHashCode;
-    const pieces =  useSelector(state => state.game.pieces);
-    const piece = pieces.get(thisSpotHashCode);
     const [userChoosePiece, setUserChoosePiece] = useState(false);
-    const {x, y} = BoardHelper.getPosFromHashCode(props.posHashCode);
-    const isLightSquare = (isEven(y) && !isEven(x)) || (!isEven(y) && isEven(x));
-
     return (
-        <button className={`${styles.square} ${isLightSquare? styles.lightSquare : styles.darkSquare}`} style={piece.image ?{backgroundImage: `url(${piece.image})`}:{}} >
-        </button>
+        <div tabIndex={props.tabIndex} className={`${styles.square} ${props.isLightSquare? styles.lightSquare : styles.darkSquare}`} style={props.image ?{backgroundImage: `url(${props.image})`}:{}} onClick={() => props.onClick(props.posHashCode)} >
+        </div>
     );
 };
 
