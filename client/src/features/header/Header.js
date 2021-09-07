@@ -6,6 +6,7 @@ import clash_icon from '../../images/swords.png';
 import noti_icon from '../../images/bell.png';
 import {useDispatch, useSelector} from "react-redux";
 import {UserConstant, userLoggingIn, userRegistering} from "../../slices/user/userSlice";
+import {BrowserRouter, Link} from "react-router-dom";
 
 const Header = props => {
     const iconWidth = "30px";
@@ -14,11 +15,13 @@ const Header = props => {
     const userDisplayName = useSelector((state) => state.user.displayName)
     const dispatch = useDispatch();
     return (
-        <div className={`${styles.containter} ${userLoginStatus === UserConstant.LOGGING_IN ? styles.blurred :''}`}>
-            <div className={styles.logoContainer}>
-                <img className={styles.logo} src={logo} alt="Normal Logo"/>
-                <strong className={styles.logoText}>Chess Master Matters</strong>
-            </div>
+        <div className={`${styles.containter} ${userLoginStatus === UserConstant.LOGGING_IN ? styles.blurred : ''}`}>
+            <Link to="/" style={{ textDecoration: 'none' }}>
+                <div className={styles.logoContainer}>
+                    <img className={styles.logo} src={logo} alt="Normal Logo"/>
+                    <strong className={styles.logoText}>Chess Master Matters</strong>
+                </div>
+            </Link>
             <div className={styles.leftToolBar}>
                 <button className={styles.button}>
                     Play
@@ -30,7 +33,10 @@ const Header = props => {
                     Puzzle
                 </button>
                 <button className={styles.button}>
-                    Tool
+                    <Link to="/counter" style={{ textDecoration: 'none' }}> Counter </Link>
+                </button>
+                <button className={styles.button}>
+                    <Link to="/testcomponent" style={{ textDecoration: 'none' }}>DevTest</Link>
                 </button>
             </div>
             <div className={styles.rightToolBar}>
@@ -42,8 +48,12 @@ const Header = props => {
                        height={iconHeight} alt="Submit Form"/>
                 {userLoginStatus !== UserConstant.LOGGED_IN ? (
                     <div>
-                        <button className={styles.button} id={styles.loginButton} onClick={() => dispatch(userLoggingIn())}>Login</button>
-                        <button className={styles.button} id={styles.registerButton} onClick={() => dispatch(userRegistering())}>Register</button>
+                        <button className={styles.button} id={styles.loginButton}
+                                onClick={() => dispatch(userLoggingIn())}>Login
+                        </button>
+                        <button className={styles.button} id={styles.registerButton}
+                                onClick={() => dispatch(userRegistering())}>Register
+                        </button>
                     </div>) : (
                     <span className={styles.userName}>{userDisplayName}</span>)}
             </div>
