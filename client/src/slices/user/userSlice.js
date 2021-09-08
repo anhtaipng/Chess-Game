@@ -42,7 +42,7 @@ const initialState = {
     ranking: UserConstant.RANKING_NOVICE,
     elo: 1200,
     money: 0,
-    move_token: ""
+    user_token: ""
 };
 
 // The function below is called a thunk and allows us to perform async logic. It

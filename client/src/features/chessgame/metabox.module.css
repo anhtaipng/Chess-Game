@@ -1,0 +1,23 @@
+.metaBoxContainer{
+    width: 300px;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.userMetaContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.user1Meta{
+    display: flex;
+    flex-direction: row;
+}
+.user2Meta{
+    display: flex;
+    flex-direction: row;
+}
