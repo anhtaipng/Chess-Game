@@ -33,6 +33,9 @@ const Header = props => {
                     Puzzle
                 </button>
                 <button className={styles.button}>
+                    <Link to="/hall" style={{ textDecoration: 'none' }}> Hall </Link>
+                </button>
+                <button className={styles.button}>
                     <Link to="/counter" style={{ textDecoration: 'none' }}> Counter </Link>
                 </button>
                 <button className={styles.button}>

@@ -1,5 +1,6 @@
 import axios from "axios";
 import {useSelector} from "react-redux";
+import {userToken} from "../user/userSlice";
 const serverRoot = "http://localhost:9306";
 const roomUrl = `${serverRoot}/games`;
 /*
@@ -9,7 +10,6 @@ const roomUrl = `${serverRoot}/games`;
     “time_mode": string // {BULLET / RAPID / NORMAL}
     }
  */
-const userToken = useSelector(state=>state.user.user_token);
 export function create_room(roomCreationInfo){
     console.log('Creating Room: ',roomCreationInfo);
     return axios({
@@ -27,8 +27,7 @@ export function create_room(roomCreationInfo){
     POST  $HOME/games/
     Body: {
         “room_id”: string
-    “player1”: string
-    “player2”: string
+       “player”: string
     }
  */
 export function join_room(roomJoinInfo){

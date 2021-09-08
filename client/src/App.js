@@ -9,6 +9,7 @@ import {UserConstant} from "./slices/user/userSlice";
 import LoginForm from "./features/forms/LoginForm";
 import RegisterForm from "./features/forms/RegisterForm";
 import {Counter} from "./features/counter/Counter";
+import Hall from "./features/hall/Hall";
 
 
 // ROOT SERVER USED WITH PROXY TO AUTHENTICATE FOR TESTING
@@ -38,6 +39,7 @@ const renderSwitch = (login_status)=> {
                         </Route>
                         <Route exact path="/testcomponent/" component={GameBoard}/>
                         <Route exact path="/counter" component={Counter}/>
+                        <Route exact path="/hall" component={Hall}/>
                         {/*<Route exact path="/info/:user_id" component={Info}>*/}
                         {/*    /!* Render the current login user info *!/*/}
                         {/*    /!* <UserInfo className="main-content"></UserInfo> *!/*/}

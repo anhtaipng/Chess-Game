@@ -1,6 +1,6 @@
 // Place Holder for an Room Item
 import React from 'react';
-import styles from 'hall.module.css'
+import styles from './hall.module.css'
 // class Room{
 //     String id;
 //     GameMode  game_mode;

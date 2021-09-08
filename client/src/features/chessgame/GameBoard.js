@@ -1,9 +1,11 @@
 import React, {useReducer} from 'react';
-import styles from './chess.module.css'
+import styles from './chess.module.css';
 import Square from "./Square";
 import BoardHelper from "../../slices/game/BoardHelper";
 import {Bishop, King, Knight, Pawn, PIECE_CONSTANT, Queen, Rook} from "./Piece";
 import {GameConstant} from "../../slices/game/gameSlice";
+import {creatMove} from "../../slices/game/MoveCreator";
+// import MessageRelayer from "../messenger/messageRelayer";
 
 
 const isEven = (num) => num % 2 === 0;
@@ -115,6 +117,7 @@ const reducer = (state, action) => {
                         }
                         pieces_copy.set(piece_dest, pieceMoved);
                         const newTurn = state.currentTurn + 1;
+                        // MessageRelayer.send()
                         return {...state, pieces: pieces_copy, pieceSrcHashCode: undefined, currentTurn: newTurn,captured_pieces: pieces_fallen};
                     }
                 } catch (e) {
@@ -129,6 +132,8 @@ const reducer = (state, action) => {
 const GameBoard = () => {
     const hashCodeArr = range(11, 88, 1).filter(x => x % 10 >= 1 && x % 10 <= 8);
     // const dispatchToStore = useDispatch();
+    const sampleMove = creatMove(1,"P","A2","A4");
+    // console.log("Sample move created:",sampleMove,JSON.stringify(sampleMove));
     const [state, dispatch] = useReducer(reducer, initialState, undefined);
     const initClassicGame = () => {
         dispatch({type: GAME_ACTION.INIT_CLASSIC_GAME});

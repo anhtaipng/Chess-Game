@@ -24,6 +24,7 @@ export const creatMove = (turn, piece_moved, piece_start_pos, piece_end_pos) =>{
         en_passant: false,
     }
 }
+
 export const creatCastlingMove = (turn, piece_start_pos, piece_end_pos) =>{
     const player = turn % 2 === 1 ? PIECE_CONSTANT.WHITE_ROYALTY : PIECE_CONSTANT.BLACK_ROYALTY;
     return {

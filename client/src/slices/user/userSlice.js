@@ -45,6 +45,7 @@ const initialState = {
     user_token: ""
 };
 
+export let userToken = "";
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
 // will call the thunk with the `dispatch` function as the first argument. Async
@@ -175,6 +176,7 @@ export const userSlice = createSlice({
                 // state = {...state, ...newUser};
                 console.log("login fullfill:", action);
                 state.move_token = action.payload.token;
+                userToken = action.payload.token;
             })
             .addCase(loginUser.rejected,(state,action)=>{
                 state.login_status = UserConstant.LOGGED_IN_FAILED;

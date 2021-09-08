@@ -1,14 +1,40 @@
-const messageRelayer = () =>{
+import {useDispatch} from "react-redux";
+import {addChatMessage, addSpectator, updatePlayerInfo} from "../../slices/room/roomSlice";
+
+const MessageConstant= {
+    MESSAGE_CODE: "Message",
+    PLAYER_JOIN_CODE: "PlayerJoin",
+    SPECTATOR_JOIN_CODE: "SpectatorJoin",
+    MOVE_CODE: "SpectatorJoin"
+}
+
+const MessageRelayer = () =>{
+    const dispatch = useDispatch();
     const update = (mess) =>{
         // Currently log to check if work
         console.log("UI will be notified about the mess:", mess);
+        const parts = mess.split();
+        switch(parts[1]){
+            case MessageConstant.MESSAGE_CODE:
+                dispatch(addChatMessage({user: parts[2], message: parts[3]}));
+            case MessageConstant.PLAYER_JOIN_CODE:
+                dispatch(updatePlayerInfo({playerNum:2,playerInfo:{}}));
+            case MessageConstant.SPECTATOR_JOIN_CODE:
+                dispatch(addSpectator({spectator:parts[2]}));
+            default:
+                console.log("Server gửi tin xàm lol :)");
+        }
     }
     const send = (mess)=>{
         // Do some thing to send the mess to the server:
         console.log("Sending the mess to server:\n",mess)
     }
+    const sendMove = (roomID,playerID,moveInfo) => {
+        const mess = `${roomID} ${MessageConstant.MOVE_CODE} ${playerID} ${moveInfo}`;
+    }
+    // const sendJoinRoom =  (roomID,)
 }
-export default messageRelayer;
+export default MessageRelayer;
 // Every time receive message M from socket.
-//      Import messageRelayer
-//      Call messageRelayer.update(M)
+//      Import MessageRelayer
+//      Call MessageRelayer.update(M)

@@ -1,6 +1,5 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {create_room} from "./roomAPI";
-import {actionsReducer} from "@reduxjs/toolkit/src/query/tests/helpers";
 
 export const RoomConstant = {
     ROOM_PENDING: "PENDING",
@@ -88,7 +87,7 @@ export const roomSlice = createSlice({
             state.time_mode = action.payload.time_mode;
         },
         addSpectator:(state,action)=>{
-            state.spectators.push(action.payload.spectators);
+            state.spectators.push(action.payload.spectator);
         },
         addChatMessage:(state,action)=>{
             state.chat_messages.push(action.payload.message);
@@ -118,4 +117,4 @@ export const roomSlice = createSlice({
 });
 
 export default roomSlice.reducer;
-export const {updatePlayerInfo,decreaseClock,increaseClock,setMode,addSpectator} = roomSlice.actions;
+export const {updatePlayerInfo,decreaseClock,increaseClock,setMode,addSpectator,addChatMessage} = roomSlice.actions;

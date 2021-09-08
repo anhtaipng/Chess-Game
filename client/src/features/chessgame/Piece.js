@@ -10,7 +10,7 @@ import blackKingImg from './chess_image/black_king.png';
 import whiteKingImg from './chess_image/white_king.png';
 import blackQueenImg from './chess_image/black_queen.png';
 import whiteQueenImg from './chess_image/white_queen.png';
-import BoardHelper from "../../slices/game/BoardHelper";
+import BoardHelper, {kingMoveDiffArray, knightMoveDiffArray} from "../../slices/game/BoardHelper";
 
 export const PIECE_CONSTANT = {
     KNIGHT: "N",
