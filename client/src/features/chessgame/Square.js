@@ -1,13 +1,7 @@
-import React, {useState} from 'react';
-import BoardHelper from "../../slices/game/BoardHelper";
+import React from 'react';
 import styles from "./chess.module.css"
-import {useSelector} from "react-redux";
-
-
-const isEven= (num) => num%2 === 0;
 
 const Square = (props) => {
-    const [userChoosePiece, setUserChoosePiece] = useState(false);
     return (
         <div tabIndex={props.tabIndex} className={`${styles.square} ${props.isLightSquare? styles.lightSquare : styles.darkSquare}`} style={props.image ?{backgroundImage: `url(${props.image})`}:{}} onClick={() => props.onClick(props.posHashCode)} >
         </div>

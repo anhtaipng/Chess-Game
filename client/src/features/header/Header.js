@@ -6,7 +6,11 @@ import clash_icon from '../../images/swords.png';
 import noti_icon from '../../images/bell.png';
 import {useDispatch, useSelector} from "react-redux";
 import {UserConstant, userLoggingIn, userRegistering} from "../../slices/user/userSlice";
-import {BrowserRouter, Link} from "react-router-dom";
+import {Link, Route, Switch} from "react-router-dom";
+import {HomePage} from "../homepage/HomePage";
+import GameBoard from "../chessgame/GameBoard";
+import {Counter} from "../counter/Counter";
+import Hall from "../hall/Hall";
 
 const Header = props => {
     const iconWidth = "30px";

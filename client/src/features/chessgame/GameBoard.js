@@ -4,7 +4,6 @@ import Square from "./Square";
 import BoardHelper from "../../slices/game/BoardHelper";
 import {Bishop, King, Knight, Pawn, PIECE_CONSTANT, Queen, Rook} from "./Piece";
 import {GameConstant} from "../../slices/game/gameSlice";
-import {creatMove} from "../../slices/game/MoveCreator";
 // import MessageRelayer from "../messenger/messageRelayer";
 
 
@@ -132,7 +131,7 @@ const reducer = (state, action) => {
 const GameBoard = () => {
     const hashCodeArr = range(11, 88, 1).filter(x => x % 10 >= 1 && x % 10 <= 8);
     // const dispatchToStore = useDispatch();
-    const sampleMove = creatMove(1,"P","A2","A4");
+    // const sampleMove = creatMove(1,"P","A2","A4");
     // console.log("Sample move created:",sampleMove,JSON.stringify(sampleMove));
     const [state, dispatch] = useReducer(reducer, initialState, undefined);
     const initClassicGame = () => {

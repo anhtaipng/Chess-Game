@@ -87,7 +87,7 @@ export const registerUser = createAsyncThunk(
     "user/registerUser",
     async(userInfo,{ rejectWithValue }) => {
         try{
-            const response = await login(userInfo);
+            const response = await register(userInfo);
             console.log("INSDIE REG THUNK:", response);
             return response.data;
         }

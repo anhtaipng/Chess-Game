@@ -1,14 +1,12 @@
 // This component is supposed to show all the game room
 import React, {useEffect, useState} from 'react';
-import axios from "axios";
-import {create_room, get_room_list, join_room} from "../../slices/room/roomAPI";
+import { get_room_list} from "../../slices/room/roomAPI";
 import styles from './hall.module.css'
 import Room from "./Room";
 import {useDispatch, useSelector} from "react-redux";
 import {createRoom, joinRoom, RoomConstant} from "../../slices/room/roomSlice";
-import {Link} from "react-router-dom";
 import {GameConstant} from "../../slices/game/gameSlice";
-import WaintingPage from "./WaintingPage";
+import WaintingPage from "./WaitingPage";
 
 // class Room{
 //     String id;

@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import styles from './form.module.css';
 import {useDispatch, useSelector} from "react-redux";
-import {loginUser, registerUser, UserConstant} from "../../slices/user/userSlice";
+import {loginUser, UserConstant} from "../../slices/user/userSlice";
 import Loader from 'react-loader-spinner';
 import DismissableAlert from "../alert/DismissableAlert";
 

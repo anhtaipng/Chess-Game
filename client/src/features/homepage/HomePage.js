@@ -1,10 +1,7 @@
-import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-
+import React from 'react';
 import styles from './homepage.module.css';
 import chess_landing_board from './chess_board_landing.png';
 export function HomePage() {
-    const dispatch = useDispatch();
     return (
         <div className={styles.landingContainer}>
             <div className={styles.chessHooker}>
@@ -24,7 +21,7 @@ export function HomePage() {
                 </div>
             </div>
             <div className={styles.gameReviewImage}>
-                <img src={chess_landing_board} alt="Chess board image"/>
+                <img src={chess_landing_board} alt="Chess board"/>
             </div>
         </div>
     );

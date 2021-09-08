@@ -9,6 +9,7 @@ const BoardHelper = (() => {
     function getEnemyRoyalty(royalty){
         return royalty === PIECE_CONSTANT.BLACK_ROYALTY ? PIECE_CONSTANT.WHITE_ROYALTY : PIECE_CONSTANT.BLACK_ROYALTY;
     }
+    // eslint-disable-next-line no-unused-vars
     function getEnemyAlivePieces(royalty,pieces){
         const enemyRoyalty = getEnemyRoyalty(royalty);
         return pieces.filter(piece => piece.royalty === enemyRoyalty);

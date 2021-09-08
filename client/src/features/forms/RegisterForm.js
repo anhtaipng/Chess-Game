@@ -24,7 +24,6 @@ const reducer = (state,action) => {
     }
 }
 const RegisterForm =  (props) => {
-    const baseUrl = `{serverRoot}/register/`;
     const dispatchToStore = useDispatch();
     const loginState = useSelector(state => state.user.login_status);
     const [username, setUserName] = useState("");
