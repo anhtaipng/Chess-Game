@@ -30,6 +30,14 @@ public class GameInstance {
         model = new ChessGameModel(player1, player2, room);
     }
 
+    public ChessGameModel getModel() {
+        return model;
+    }
+
+    public ChessGameView getView() {
+        return view;
+    }
+
     public void processMove(String playerID, MoveInfo move) throws InvalidUserException {
         // Check user meta data.
         if (!playerID.equals(model.getPlayer1().getPlayerID()) || !playerID.equals(model.getPlayer2().getPlayerID())) {
