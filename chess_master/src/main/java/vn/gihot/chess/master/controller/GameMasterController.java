@@ -5,10 +5,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.gihot.chess.master.config.JwtTokenUlti;
 import vn.gihot.chess.master.game.GameMaster;
+import vn.gihot.chess.master.model.room.Room;
 import vn.gihot.chess.master.model.socket.Message;
 import vn.gihot.chess.master.request.CreateRoomRequest;
 import vn.gihot.chess.master.request.JoinRoomRequest;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 // This class should receive and delegate the request from the client
@@ -60,7 +63,10 @@ public class GameMasterController {
     @CrossOrigin
     @RequestMapping(value = "/games", method = RequestMethod.GET)
     public ResponseEntity<?> listRoom() throws Exception {
-        return ResponseEntity.ok(gameMaster.getPlayerInRooms());
+        List<Room> listRooms;
+        listRooms = new ArrayList<>();
+        gameMaster.getRooms().forEach((key, value) -> {listRooms.add(value);});
+        return ResponseEntity.ok(listRooms);
     }
 
 }
