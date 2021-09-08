@@ -12,9 +12,11 @@ const getVariantIconFromString= (variant) =>{
             return classicChessIcon;
     }
 }
-const GameMetaBox = () => {
+const GameMetaBox = (props) => {
     const variant = useSelector(state => state.room.variant);
-    const user1 = useSelector(state => state.room.player1);
+    const user = useSelector(state => state.room.player1);
+    const client = useSelector(state => state.user);
+    const user1 = props.isWaiting ? client : user;
     const user2 = useSelector(state => state.room.player2);
     const variantImage = getVariantIconFromString(variant);
     return (
@@ -28,16 +30,16 @@ const GameMetaBox = () => {
                 <div className={styles.userMetaContainer}>
                     <div className={styles.user1Meta}>
                         <div>black</div>
-                        <div className={styles.userName}>{user1.username}</div>
+                        <div className={styles.userName}>{user1.id}</div>
                         <div className ={styles.userElo}>{user1.elo}</div>
-                        <div className ={styles.userTitle}>{user1.title}</div>
+                        {/*<div className ={styles.userTitle}>{user1.title}</div>*/}
                     </div>
-                    <div className={styles.user2Meta}>
+                    {user2 && <div className={styles.user2Meta}>
                         <div>black</div>
                         <div className={styles.userName}>{user2.username}</div>
                         <div className ={styles.userElo}>{user2.elo}</div>
-                        <div className ={styles.userTitle}>{user2.title}</div>
-                    </div>
+                        {/*<div className ={styles.userTitle}>{user2.title}</div>*/}
+                    </div>}
                 </div>
             </div>
     );

@@ -26,6 +26,10 @@ public class JwtTokenUlti implements Serializable {
 
 
     public boolean validateJwttoken(String token) throws Exception{
+        System.out.println("Initial Token is   :" + token);
+        System.out.println("Token in base 64 is:" + token);
+        String base64secret = javax.xml.bind.DatatypeConverter.printBase64Binary(
+                javax.xml.bind.DatatypeConverter.parseBase64Binary(secret));
         try{
             Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
             return true;

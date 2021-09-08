@@ -1,5 +1,6 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {create_room} from "./roomAPI";
+import {userToken} from "../user/userSlice";
 
 export const RoomConstant = {
     ROOM_PENDING: "PENDING",
@@ -98,18 +99,16 @@ export const roomSlice = createSlice({
     extraReducers:(builder) =>{
         builder
             .addCase(createRoom.pending, (state, action) =>{
+                console.log("Creat room with token",userToken);
                 state.room_status = RoomConstant.ROOM_PENDING;
             })
             .addCase(createRoom.fulfilled, (state, action) =>{
-                setTimeout(() => {
-                    console.log("Create Room","I am waiting for 2 second")
-                }, 2000);
+                console.log("Room Info returned by Server:",action.payload);
                 state.room_id = action.payload.room_id;
                 state.variant = action.payload.game_mode;
                 state.time_mode = action.payload.time_mode;
                 state.room_status = RoomConstant.ROOM_CREATED;
-                console.log("Creat room", "I stopped waiting second");
-
+                console.log("Room Created with ID:",action.payload.room_id);
             })
             .addCase(joinRoom.pending, (state, action) =>{
                 state.room_status = RoomConstant.ROOM_PENDING;

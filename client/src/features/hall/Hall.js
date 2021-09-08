@@ -1,12 +1,14 @@
 // This component is supposed to show all the game room
 import React, {useEffect, useState} from 'react';
-import { get_room_list} from "../../slices/room/roomAPI";
+import {get_room_list} from "../../slices/room/roomAPI";
 import styles from './hall.module.css'
 import Room from "./Room";
 import {useDispatch, useSelector} from "react-redux";
 import {createRoom, joinRoom, RoomConstant} from "../../slices/room/roomSlice";
 import {GameConstant} from "../../slices/game/gameSlice";
 import WaintingPage from "./WaitingPage";
+import WaitingPage from "./WaitingPage";
+import GameMetaBox from "../chessgame/GameMetaBox";
 
 // class Room{
 //     String id;
@@ -22,6 +24,7 @@ const Hall = () => {
     }, [])
     const player = useSelector(state => state.user.id);
     const roomStatus = useSelector(state => state.room.room_status);
+    const player2 = useSelector(state => state.room.player2);
     const dispatch = useDispatch();
 
     const getRoomList = async () => {
@@ -65,23 +68,67 @@ const Hall = () => {
         dispatch(createRoom(roomCreateInfo));
     }
     return (
-        (roomStatus === RoomConstant.ROOM_PENDING) ? <WaintingPage/> :
-            <div>
-                <button onClick={() => createNewClassicRoom()}>
-                    Create a New room
-                </button>
-                <div className={styles.roomListContainer}>
-                    {
-                        roomList.map((ele) => {
-                            return <Room key={ele.id.toString()} roomId={ele.roomId}
-                                         gameMode={ele.game_mode} timeMode={ele.time_mode}
-                                         onClick={() => tryJoinRoom(ele.id)
-                                         }/>
-                        })
+        <>
+            {
+                (() => {
+                    if (roomStatus === RoomConstant.ROOM_PENDING) {
+                        return <WaitingPage/>;
+                    } else if (roomStatus === RoomConstant.ROOM_CREATED && !player2) {
+                        return <div>
+                            <WaitingPage/>
+                            <GameMetaBox isWaiting={true}/>
+                        </div>
+                    } else {
+                        return <div>
+                            <button onClick={() => createNewClassicRoom()}>
+                                Create a New room
+                            </button>
+                            <div className={styles.roomListContainer}>
+                                {
+                                    roomList.map((ele) => {
+                                        console.log("Room Found:", ele);
+                                        return <Room key={ele.id.toString()} roomId={ele.id}
+                                                     gameMode={ele.gameMode} timeMode={ele.timeMode}
+                                                     onClick={() => tryJoinRoom(ele.id)
+                                                     }/>
+                                    })
+                                }
+                            </div>
+                        </div>
                     }
-                </div>
-            </div>
+                })()
+            }
+
+        </>
     )
 };
-
 export default Hall;
+
+
+// (roomStatus === RoomConstant.ROOM_PENDING || (roomStatus === RoomConstant.ROOM_PENDING && !player2) ) ? <WaintingPage/> :
+//     <div>
+//         <button onClick={() => createNewClassicRoom()}>
+//             Create a New room
+//         </button>
+//         <div className={styles.roomListContainer}>
+//             {
+//                 roomList.map((ele) => {
+//                     return <Room key={ele.id.toString()} roomId={ele.roomId}
+//                                  gameMode={ele.game_mode} timeMode={ele.time_mode}
+//                                  onClick={() => tryJoinRoom(ele.id)
+//                                  }/>
+//                 })
+//             }
+//         </div>
+//     </div>
+
+
+// return (
+//     <>
+//         {
+//             () => {
+
+//             }
+//         }
+//     </>
+// )

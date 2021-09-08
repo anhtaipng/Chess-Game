@@ -175,6 +175,7 @@ export const userSlice = createSlice({
                 // let newUser = action.payload;
                 // state = {...state, ...newUser};
                 console.log("login fullfill:", action);
+                console.log("login_token:",action.payload.token)
                 state.move_token = action.payload.token;
                 userToken = action.payload.token;
             })

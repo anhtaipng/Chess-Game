@@ -21,7 +21,7 @@ public class MasterApplication {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**").allowCredentials(true).allowedOrigins("http://localhost:3000").allowedMethods("*");
+				registry.addMapping("/**").allowCredentials(true).allowedOrigins("http://localhost:3000","http://localhost:8888","http://localhost:9999").allowedMethods("*");
 			}
 		};
 	}

@@ -6,12 +6,12 @@ import styles from './hall.module.css'
 //     GameMode  game_mode;
 //     TimeMode time_mode;
 // }
-const Room = (props) => {
+const Room = ({roomId,gameMode,timeMode}) => {
     return (
         <div className={styles.roomContainer}>
-            <p>{props.roomId}</p>
-            <p>{props.gameMode}</p>
-            <p>{props.timeMode}</p>
+            <p>{roomId}</p>
+            <p>{gameMode}</p>
+            <p>{timeMode}</p>
         </div>
     );
 };
