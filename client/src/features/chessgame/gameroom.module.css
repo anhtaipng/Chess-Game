@@ -1,0 +1,4 @@
+.inGameRoom {
+    display: flex;
+    flex-direction: row;
+}

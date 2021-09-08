@@ -18,7 +18,6 @@ const GameMetaBox = () => {
     const user2 = useSelector(state => state.room.player2);
     const variantImage = getVariantIconFromString(variant);
     return (
-        <div>
             <div className={styles.metaBoxContainer}>
                 <div className={styles.roomMetaContainer}>
                     <img width="80px" height="80px" src={variantImage} alt={`vairnaasd`}/>
@@ -41,7 +40,6 @@ const GameMetaBox = () => {
                     </div>
                 </div>
             </div>
-        </div>
     );
 };
 

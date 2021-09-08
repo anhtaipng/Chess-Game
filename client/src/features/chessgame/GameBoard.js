@@ -157,7 +157,7 @@ const GameBoard = () => {
         }
     }
     return (
-        <div>
+        <div className={styles.container}>
             <button onClick={initClassicGame}> New Game</button>
             <div className={styles.boardContainer}>
                 <div className={styles.boardGrid}>

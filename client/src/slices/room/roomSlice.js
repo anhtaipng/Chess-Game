@@ -55,6 +55,8 @@ const initialState = {
     chat_messages: [],
 }
 
+
+
 export const roomSlice = createSlice({
     name: "room", initialState,
     reducers: {
@@ -99,10 +101,15 @@ export const roomSlice = createSlice({
                 state.room_status = RoomConstant.ROOM_PENDING;
             })
             .addCase(createRoom.fulfilled, (state, action) =>{
+                setTimeout(() => {
+                    console.log("Create Room","I am waiting for 2 second")
+                }, 2000);
                 state.room_id = action.payload.room_id;
                 state.variant = action.payload.game_mode;
                 state.time_mode = action.payload.time_mode;
                 state.room_status = RoomConstant.ROOM_CREATED;
+                console.log("Creat room", "I stopped waiting second");
+
             })
             .addCase(joinRoom.pending, (state, action) =>{
                 state.room_status = RoomConstant.ROOM_PENDING;

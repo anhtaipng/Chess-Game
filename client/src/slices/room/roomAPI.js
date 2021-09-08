@@ -1,7 +1,7 @@
 import axios from "axios";
 import {useSelector} from "react-redux";
 import {userToken} from "../user/userSlice";
-const serverRoot = "http://localhost:9306";
+const serverRoot = "http://localhost:9777";
 const roomUrl = `${serverRoot}/games`;
 /*
     Body: {

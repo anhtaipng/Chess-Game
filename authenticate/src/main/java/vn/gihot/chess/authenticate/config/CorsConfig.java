@@ -14,7 +14,7 @@ public class CorsConfig {
 
     @Bean
     public WebMvcConfigurer getCorsConfiguration(){
-        System.out.println("SJSDKLJFLDSLKFL:" + allowedOrigin);
+        System.out.println("Gonna allow the origin:" + allowedOrigin);
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {

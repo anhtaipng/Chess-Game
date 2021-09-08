@@ -1,5 +1,7 @@
 @import url('../../reset.css');
-
+.container {
+    flex-grow: 3;
+}
 .boardContainer{
     width: 800px;
     height: 800px;
