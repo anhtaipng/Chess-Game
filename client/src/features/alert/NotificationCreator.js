@@ -1,24 +1,40 @@
+import {toast} from "react-toastify";
+
 const NotificationCreator = () => {
-    const createNotification = (title,message,type,insert,container) =>{
-        return {
-            title,
-            message,
-            type,
-            insert,
-            container,
-            animationIn: ["animate__animated animate__fadeIn"], // `animate.css v4` classes
-            animationOut: ["animate__animated animate__fadeOut"], // `animate.css v4` classes
-            dismiss: {
-                duration: 2000
-            },
-            slidingExit: {
-                duration: 800,
-                timingFunction: 'ease-out',
-                delay: 0
-            }
-        }
+    const toastSuccessful = (message) =>{
+        toast.success(`🦄 ${message}`, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
     }
-    return {createNotification};
+    const toastWarning = (message) =>{
+        toast.warn(`🦄 ${message}!`, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
+    }
+    const toastError = (message) =>{
+        toast.error('🦄 Wow so easy!', {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
+    }
+    return {toastWarning, toastSuccessful,toastError};
 }
 
 
