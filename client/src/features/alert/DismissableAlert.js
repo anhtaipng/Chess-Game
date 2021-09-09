@@ -1,9 +1,10 @@
 import Alert from 'react-bootstrap/Alert'
 import {useState} from "react";
+import NotificationCreator from "./NotificationCreator";
 
 function DismissibleAlert({heading,message,type}) {
     const [show, setShow] = useState(true);
-
+    NotificationCreator.toastWarning(message);
     return (
         <>
             <Alert show={show} variant={type}>

@@ -9,6 +9,7 @@ import MoveCreator from "../../slices/game/MoveCreator";
 import MessageObserver from "../messenger/messageObserver";
 import {useSelector} from "react-redux";
 import {toast} from "react-toastify";
+import NotificationCreator from "../alert/NotificationCreator";
 
 const isEven = (num) => num % 2 === 0;
 const range = (start, stop, step) => Array.from({length: (stop - start) / step + 1}, (_, i) => start + (i * step));
@@ -180,15 +181,7 @@ const GameBoard = () => {
             }
         }
         else{
-            toast.error('🦄 Wow so easy!', {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            NotificationCreator.toastError("You dont have the right to make move now.")
         }
     }
     return (
