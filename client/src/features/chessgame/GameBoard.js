@@ -1,4 +1,4 @@
-import React, {useReducer, useState} from 'react';
+import React, {useEffect, useReducer, useState} from 'react';
 import styles from './chess.module.css';
 import Square from "./Square";
 import BoardHelper from "../../slices/game/BoardHelper";
@@ -8,7 +8,6 @@ import MessageRelayer from "../messenger/messageRelayer";
 import MoveCreator from "../../slices/game/MoveCreator";
 import MessageObserver from "../messenger/messageObserver";
 import {useSelector} from "react-redux";
-import {toast} from "react-toastify";
 import NotificationCreator from "../alert/NotificationCreator";
 
 const isEven = (num) => num % 2 === 0;
@@ -66,9 +65,10 @@ const init = (gameMode) => {
             // Queen
             pieces_copy.set(14, new Queen(PIECE_CONSTANT.WHITE_ROYALTY));
             pieces_copy.set(84, new Queen(PIECE_CONSTANT.BLACK_ROYALTY));
+            console.log("Board AFTER INIT:",pieces_copy);
             return {
                 pieces: pieces_copy,
-                captured_pieces: new Map(),
+                captured_pieces: [],
                 currentTurn: 1,
                 pieceChosen: undefined
             };
@@ -101,9 +101,10 @@ const reducer = (state, action) => {
                 pieces_fallen.push(piece_dead);
                 pieces_copy.delete(piece_dest);
             }
+            pieces_copy.delete(piece_src);
             pieces_copy.set(piece_dest, pieceMoved);
             const newTurn = state.currentTurn + 1;
-            // MessageRelayer.send()
+            MessageRelayer.send();
             return {
                 ...state,
                 pieces: pieces_copy,
@@ -121,41 +122,53 @@ const GameBoard = () => {
     // const sampleMove = creatMove(1,"P","A2","A4");
     // console.log("Sample move created:",sampleMove,JSON.stringify(sampleMove));
     const [state, dispatch] = useReducer(reducer, initialState, undefined);
-    const thisUser = useSelector(state.user.id);
-    const thisPlayer1 = useSelector(state.room.player1);
-    const thisPlayer2 = useSelector(state.room.player2);
-    const myValidTurn = (() => {
-        if (thisUser === thisPlayer1.id) {
+    const thisUser = useSelector(state => state.user.id_user);
+    const thisPlayer1 = useSelector(state => state.room.player1);
+    const thisPlayer2 = useSelector(state => state.room.player2);
+    console.log("State of the game Board:", thisUser, thisPlayer2, thisPlayer1);
+    useEffect(
+        () => {initClassicGame();
+            const messageObserver = new MessageObserver();
+            MessageRelayer.registerObserver(messageObserver);
+            messageObserver.registerMoveCallBack(socketMoveMessageHandler);
+        },[]
+    );
+    const myValidTurn = (() =>{
+        console.log("Checking turn");
+        if (thisUser === thisPlayer1.playerID) {
+            console.log("MY VALID TURN IS:",TURN_CONSTANTT.ODD_TURN);
             return TURN_CONSTANTT.ODD_TURN;
         }
-        else if (thisUser === thisPlayer2.id) {
+        else if (thisUser === thisPlayer2.playerID) {
+            console.log("MY VALID TURN IS:",TURN_CONSTANTT.EVEN_TURN);
             return TURN_CONSTANTT.EVEN_TURN;
         }
         else return TURN_CONSTANTT.SPECTATE_ONLY;
     })();
+
     const initClassicGame = () => {
         dispatch({type: GAME_ACTION.INIT_CLASSIC_GAME});
         console.log(state);
     }
     // Message related computations
-    const messageObserver = new MessageObserver();
+
     const socketMoveMessageHandler = (moveInfo) => {
         console.log("Board Received move:", moveInfo);
         const endPosHashCode = BoardHelper.getHashCodeFromCharNum(moveInfo.piece_end_pos);
         const startPosHashCode = BoardHelper.getHashCodeFromCharNum(moveInfo.piece_start_pos);
+        console.log("Dispatch to store Move Validated:", endPosHashCode, startPosHashCode);
         dispatch({type: GAME_ACTION.MOVE_VALIDATED,payload:{
                 srcHashCode: startPosHashCode,
                 destHashCode: endPosHashCode
             }})
     }
 
-    messageObserver.registerMoveCallBack(socketMoveMessageHandler);
     // Piece Choosing and execute move Logic
     const checkValidTurn = () =>{
         if(myValidTurn === TURN_CONSTANTT.ODD_TURN && state.currentTurn % 2 === 1){
             return true;
         }
-        else if(myValidTurn === TURN_CONSTANTT.ODD_TURN && state.currentTurn % 2 === 0){
+        else if(myValidTurn === TURN_CONSTANTT.EVEN_TURN && state.currentTurn % 2 === 0){
             return true;
         }
         else{
@@ -164,6 +177,7 @@ const GameBoard = () => {
     }
     const handleSquareClick = (posHashCode) => {
         if(checkValidTurn()) {
+            NotificationCreator.toastSuccessful("Yeah, this is your turn");
             if (!state.pieceSrcHashCode) {
                 dispatch({
                     type: GAME_ACTION.CHOOSE_PIECE, payload: {
@@ -173,8 +187,10 @@ const GameBoard = () => {
                 console.log("Piece chosen:" + posHashCode);
             } else {
                 // Send socket move to server
-                const pieceMoved = state.pieces.get(state.srcHashCode);
-                const moveInfo = MoveCreator.creatMove(state.currentTurn, pieceMoved.type, state.srcHashCode, posHashCode);
+                console.log("Valid Player TURN WITH PIECES:",state);
+                console.log("The piece chosen to move was:",state.pieces.get(state.pieceSrcHashCode));
+                const pieceMoved = state.pieces.get(state.pieceSrcHashCode);
+                const moveInfo = MoveCreator.creatMove(state.currentTurn, pieceMoved.type, state.pieceSrcHashCode, posHashCode);
                 console.log("Validating pieceMoved:", moveInfo);
                 MessageRelayer.sendMove(moveInfo);
                 console.log("Trying to move To" + posHashCode)
@@ -186,15 +202,16 @@ const GameBoard = () => {
     }
     return (
         <div className={styles.container}>
-            <button onClick={initClassicGame}> New Game</button>
+            {/*<button onClick={initClassicGame}> New Game</button>*/}
             <div className={styles.boardContainer}>
                 <div className={styles.boardGrid}>
                     {
                         hashCodeArr.map((hashCode) => {
                                 const {x, y} = BoardHelper.getPosFromHashCode(hashCode);
                                 const isLightSquare = (isEven(y) && !isEven(x)) || (!isEven(y) && isEven(x));
+                                // ! Unknonw error ?????? why pieces returned undefined ??????
                                 const image = state.pieces.has(hashCode) ? state.pieces.get(hashCode).image : undefined;
-                                console.log("The board is reloaded");
+                                console.log("The board is reloaded:",state);
                                 return <Square tabIndex={hashCode.toString()} key={hashCode.toString()}
                                                posHashCode={hashCode}
                                                dispatch={dispatch} isLightSquare={isLightSquare} image={image}

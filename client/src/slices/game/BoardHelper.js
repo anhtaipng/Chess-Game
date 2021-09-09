@@ -50,7 +50,7 @@ const BoardHelper = (() => {
     function convertNumNumToCharNum(numNumString) {
         return String.fromCharCode(parseInt(numNumString.charAt(0)) + 65).concat(numNumString.charAt(1));
     }
-    // Convert B1 --> 21  |  C3 --> 33.
+    // Convert B1 --> 21  |  C3 --> Ch33.
     function convertCharNumToNumNum(charNumPos) {
         return charNumPos;
     }

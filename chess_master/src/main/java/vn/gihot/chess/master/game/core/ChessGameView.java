@@ -16,13 +16,15 @@ public class ChessGameView {
     private final String room;
     // Use this class for Serialization + Deserialization
     private final Gson gson;
-    @Autowired
-    SocketSender socketSender;
+//    @Autowired
+//    SocketSender socketSender;
+    private final SocketSender socketSender;
     public ChessGameView(String room,String player1,String player2){
         this.player1 = player1;
         this.player2 = player2;
         this.room = room;
         gson = new Gson();
+        this.socketSender = ApplicationContextUtils.getApplicationContext().getBean(SocketSender.class);
     }
 
     // Send a normal mess
@@ -31,9 +33,12 @@ public class ChessGameView {
     }
     // Send Move
     public void sendMove(String playerID,MoveInfo move){
+        if (socketSender == null) {
+            System.out.println("SOCKET SENDER IS NULL @@");
+        }
         String moveToSend = String.format("%s Move %s %s", this.room, playerID, gson.toJson(move));
         System.out.println("Server Send Move Message:" + moveToSend);
-        sendTo2Players("MOVE " + gson.toJson(move));
+        sendTo2Players(moveToSend);
     }
     // Send Noti
     public void notifyGameEnd(GameEndType gameEndType){

@@ -1,15 +1,24 @@
 package vn.gihot.chess.master.request;
 
 public class JoinRoomRequest {
+    String room_id;
     String player;
-    String id_room;
+
 
     public JoinRoomRequest() {
     }
 
-    public JoinRoomRequest(String player, String id_room) {
+    public JoinRoomRequest(String room_id, String player) {
+        this.room_id = room_id;
         this.player = player;
-        this.id_room = id_room;
+    }
+
+    public String getRoom_id() {
+        return room_id;
+    }
+
+    public void setRoom_id(String room_id) {
+        this.room_id = room_id;
     }
 
     public String getPlayer() {
@@ -18,13 +27,5 @@ public class JoinRoomRequest {
 
     public void setPlayer(String player) {
         this.player = player;
-    }
-
-    public String getId_room() {
-        return id_room;
-    }
-
-    public void setId_room(String id_room) {
-        this.id_room = id_room;
     }
 }

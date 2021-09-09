@@ -17,7 +17,7 @@ export default class MessageObserver{
             this.messageCallBackMap.get(mess)();
         }
         else{
-            const parts = mess.split();
+            const parts = mess.split(" ");
             if (parts[1] === MessageConstant.MOVE_CODE) {
                 console.log("Observer is executing move callback");
                 this.moveCallBack(JSON.parse(parts[3]));

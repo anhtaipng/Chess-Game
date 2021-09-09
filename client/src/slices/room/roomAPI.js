@@ -11,7 +11,7 @@ const joinRoomUrl = `${serverRoot}/games/join`;
     }
  */
 export function create_room(roomCreationInfo){
-    console.log('Creating Room: ',roomCreationInfo);
+    console.log('Creating Room with API: ',roomCreationInfo);
     return axios({
         method: 'post',
         url: roomUrl,

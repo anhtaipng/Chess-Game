@@ -29,6 +29,7 @@ const SocketConfig = (() =>{
     
     
     const sendMess = (message) => {
+        console.log("Thinh Socket send:", message);
         if (connected)
             client.send('/app/user-all',{}, message);
     }

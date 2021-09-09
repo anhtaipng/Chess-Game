@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
-import {create_room} from "./roomAPI";
+import {create_room, join_room} from "./roomAPI";
 import {userToken} from "../user/userSlice";
 
 export const RoomConstant = {
@@ -35,7 +35,7 @@ export const joinRoom = createAsyncThunk(
     "room/joinRoom",
     async(roomJoinInfo,{rejectWithValue}) =>{
         try{
-            const response = await create_room(roomJoinInfo);
+            const response = await join_room(roomJoinInfo);
             return response.data;
         }
         catch (e){
@@ -77,6 +77,7 @@ export const roomSlice = createSlice({
             } else if (action.payload.playerNum === 2) {
                 state.player2 = action.payload.playerInfo;
             }
+            state.room_status = RoomConstant.ROOM_PLAYING;
         },
         decreaseClock: (state, action) => {
             if (action.payload.playerNum === 1) {
@@ -111,15 +112,17 @@ export const roomSlice = createSlice({
             })
             .addCase(createRoom.fulfilled, (state, action) => {
                 console.log("Room Info returned by Server:", action.payload);
-                state.room_id = action.payload.room_id;
+                state.room_id = action.payload.id_room;
                 state.variant = action.payload.game_mode;
                 state.time_mode = action.payload.time_mode;
                 state.room_status = RoomConstant.ROOM_CREATED;
+                state.player1 = action.payload;
                 console.log("Room Created with ID:", action.payload.room_id);
             })
             .addCase(createRoom.rejected, (state, action) => {
                 state.room_status = RoomConstant.ROOM_FAILED;
                 state.room_error_message = action.payload;
+                state.player1 = action.payload;
             })
             .addCase(joinRoom.pending, (state, action) => {
                 state.room_status = RoomConstant.ROOM_PENDING;
@@ -130,7 +133,7 @@ export const roomSlice = createSlice({
                 state.time_mode = action.payload.time_mode;
                 state.player1 = action.payload.player1;
                 state.player2 = action.payload.player2;
-                state.room_status = RoomConstant.ROOM_CREATED;
+                state.room_status = RoomConstant.ROOM_PLAYING;
             })
             .addCase(joinRoom.rejected, (state, action) => {
                 state.room_status = RoomConstant.ROOM_FAILED;

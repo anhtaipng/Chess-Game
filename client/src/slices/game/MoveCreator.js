@@ -11,7 +11,7 @@
 // }
 import {PIECE_CONSTANT} from "../../features/chessgame/Piece";
 import BoardHelper from "./BoardHelper";
-const MoveCreator = () =>{
+const MoveCreator = (() =>{
     const creatMove = (turn, piece_moved, pieceSrcHashCode, pieceDestHashCode) =>{
         const player = turn % 2 === 1 ? PIECE_CONSTANT.WHITE_ROYALTY : PIECE_CONSTANT.BLACK_ROYALTY;
         const startPosCharNum = BoardHelper.getCharNumFromHashCode(pieceSrcHashCode);
@@ -67,6 +67,6 @@ const MoveCreator = () =>{
         }
     };
     return {creatCastlingMove,creatMove,createEnpassantMove,createPromotionMove}
-}
+})()
 
 export default MoveCreator;

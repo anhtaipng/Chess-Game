@@ -11,12 +11,6 @@ import GameMetaBox from "../chessgame/GameMetaBox";
 import InGameRoom from "../chessgame/InGameRoom";
 import DismissableAlert from "../alert/DismissableAlert";
 
-// class Room{
-//     String id;
-//     GameMode  game_mode;
-//     TimeMode time_mode;
-// }
-
 const Hall = () => {
     const [roomList, setRoomList] = useState([]);
 
@@ -28,7 +22,6 @@ const Hall = () => {
     const player2 = useSelector(state => state.room.player2);
     const errorMessage = useSelector(state => state.room.room_error_message);
     const dispatch = useDispatch();
-
     const getRoomList = async () => {
         try {
             const response = await get_room_list();

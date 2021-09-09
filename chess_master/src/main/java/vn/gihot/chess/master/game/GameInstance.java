@@ -21,8 +21,6 @@ import vn.gihot.chess.master.model.room.Room;
 public class GameInstance {
     ChessGameModel model;
     ChessGameView view;
-    @Autowired
-    SocketSender socketSender;
     public GameInstance(Room room, Player player1, Player player2){
         // Initializing the view
         view = new ChessGameView(room.getId(),player1.getPlayerID(),player2.getPlayerID());
@@ -40,7 +38,8 @@ public class GameInstance {
 
     public void processMove(String playerID, MoveInfo move) throws InvalidUserException {
         // Check user meta data.
-        if (!playerID.equals(model.getPlayer1().getPlayerID()) || !playerID.equals(model.getPlayer2().getPlayerID())) {
+        if (!playerID.equals(model.getPlayer1().getPlayerID()) && !playerID.equals(model.getPlayer2().getPlayerID())) {
+            System.out.println("PROCESSING MOVE:" + playerID + " with Player1 ID:" + model.getPlayer1().getPlayerID() + " And player 2 ID:" +model.getPlayer2().getPlayerID());
             throw new InvalidUserException("Malicious user tried to interfere with room:" + model.getRoom().getId());
         }
         try {

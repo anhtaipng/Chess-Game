@@ -63,7 +63,7 @@ public class GameMaster {
         playerInRooms.get(id_room).add(player_id);
         if (playerInRooms.get(id_room).size() == 2) {
             createGame(rooms.get(id_room), new Player(playerInRooms.get(id_room).get(0), "white", Type.WHITE),
-                    new Player(playerInRooms.get(id_room).get(0), "black", Type.BLACK));
+                    new Player(playerInRooms.get(id_room).get(1), "black", Type.BLACK));
             //System.out.println(id_room + " PlayerJoin " + player_id + " 1200");
             return id_room + " PlayerJoin " + player_id + " 1200";
         }

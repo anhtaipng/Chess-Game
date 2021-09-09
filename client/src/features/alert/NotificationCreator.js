@@ -24,7 +24,7 @@ const NotificationCreator = (() => {
         });
     }
     const toastError = (message) =>{
-        toast.error('🦄 Wow so easy!', {
+        toast.error(`🦄 ${message}!`, {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
