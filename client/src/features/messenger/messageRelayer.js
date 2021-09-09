@@ -1,4 +1,3 @@
-import {useDispatch} from "react-redux";
 import {addChatMessage, addSpectator, updatePlayerInfo} from "../../slices/room/roomSlice";
 import {store} from "../../app/store";
 import sendMess from "../../SocketConfig";
@@ -12,6 +11,7 @@ export const MessageConstant = {
 const MessageRelayer = (() => {
     const dispatch = store.dispatch;
     const state = store.getState();
+    console.log("Message Relayer Init:", state);
     // eslint-disable-next-line no-unused-vars
     const observers = [];
     const registerObserver = (o) =>{
@@ -32,7 +32,11 @@ const MessageRelayer = (() => {
                 dispatch(addChatMessage({user: parts[2], message: parts[3]}));
                 break;
             case MessageConstant.PLAYER_JOIN_CODE:
-                dispatch(updatePlayerInfo({playerNum: 2, playerInfo: {}}));
+                const state = store.getState();
+                console.log("Message Relayer: State when player Joined:", state);
+                if (state.player1) {
+                    dispatch(updatePlayerInfo({playerNum: 2, playerInfo: {id_user:parts[2]},elo:parts[3]}));
+                }
                 break;
             case MessageConstant.SPECTATOR_JOIN_CODE:
                 dispatch(addSpectator({spectator: parts[2]}));

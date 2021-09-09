@@ -20,7 +20,12 @@
   filter: blur(8px);
   -webkit-filter: blur(8px);
 }
-
+.main{
+  min-height: 6em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-float infinite 3s ease-in-out;

@@ -53,7 +53,7 @@ public class GameInstance {
         }
         // If everything seems okay
         model.executeMove(move);
-        view.sendMove(move);
+        view.sendMove(playerID,move);
         if (model.getEndGameResult() != GameEndType.NOT_END_YET) {
             view.notifyGameEnd(model.getEndGameResult());
         }

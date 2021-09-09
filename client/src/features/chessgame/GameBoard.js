@@ -8,8 +8,7 @@ import MessageRelayer from "../messenger/messageRelayer";
 import MoveCreator from "../../slices/game/MoveCreator";
 import MessageObserver from "../messenger/messageObserver";
 import {useSelector} from "react-redux";
-import {store} from "react-notifications-component";
-import NotificationCreator from "../alert/NotificationCreator";
+import {toast} from "react-toastify";
 
 const isEven = (num) => num % 2 === 0;
 const range = (start, stop, step) => Array.from({length: (stop - start) / step + 1}, (_, i) => start + (i * step));
@@ -181,10 +180,15 @@ const GameBoard = () => {
             }
         }
         else{
-            const notification = NotificationCreator.createNotification("Invalid Turn Detected", "Đợi đến lượt mình đi ông nội", "danger", "top", "top-right");
-            store.addNotification(
-                ...notification
-            )
+            toast.error('🦄 Wow so easy!', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
         }
     }
     return (
