@@ -5,25 +5,27 @@ import {loginUser, UserConstant} from "../../slices/user/userSlice";
 import Loader from 'react-loader-spinner';
 import DismissableAlert from "../alert/DismissableAlert";
 import SocketConfig from '../../SocketConfig';
-
 const LoginForm = props => {
     const dispatch = useDispatch();
     const [username, setUserName] = useState("");
     const [password, setPassword] = useState("");
     const logginState = useSelector(state => state.user.login_status);
-    const handleSubmit = (e) =>{
+
+    const handleSubmit =(e) =>{
         e.preventDefault();
         try{
             const requestResult = dispatch(loginUser({username, password})).unwrap();
-            const testRealResult = async () => await requestResult;
+            const testRealResult = async () =>{
+                await requestResult;
+                SocketConfig.connectCreation();
+            }             
             console.log("Login Result:",testRealResult().token);
-        
-            console.log("SOCKET CONNECTOIN TEST THINH:",SocketConfig,"THINH HAHA: \n",SocketConfig.connectCreation);
-            SocketConfig.connectCreation();
+
         }
         catch (error){
             console.log("ERROR at Register asd:",error);
         }
+
     }
     return (
         <section className={styles.section}>

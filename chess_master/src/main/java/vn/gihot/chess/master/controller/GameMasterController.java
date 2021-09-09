@@ -44,8 +44,9 @@ public class GameMasterController {
     //JOIN ROOM
     @CrossOrigin
     @RequestMapping(value = "/games/join", method = RequestMethod.POST)
-    public ResponseEntity<?> newRooom(@RequestHeader("authorization") String token, @RequestBody JoinRoomRequest joinRoomRequest) throws Exception {
+    public ResponseEntity<?> joinRooom(@RequestHeader("authorization") String token, @RequestBody JoinRoomRequest joinRoomRequest) throws Exception {
         if (jwtTokenUlti.validateJwttoken(token)) {
+            System.out.println("join rooom" + joinRoomRequest.getPlayer());
             socketSender.sendOnlyUser(joinRoomRequest.getPlayer(), gameMaster.joinRoom(joinRoomRequest.getId_room(), joinRoomRequest.getPlayer()));
             return ResponseEntity.ok(gameMaster.getGames().get(joinRoomRequest.getId_room()).getModel());
         }

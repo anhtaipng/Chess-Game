@@ -6,13 +6,13 @@ import styles from './hall.module.css'
 //     GameMode  game_mode;
 //     TimeMode time_mode;
 // }
-const Room = ({roomId,gameMode,timeMode}) => {
+const Room = ({roomId,gameMode,timeMode,onClick}) => {
     return (
-        <div className={styles.roomContainer}>
+        <button tabIndex={roomId} className={styles.roomContainer} onClick={()=>onClick()}>
             <p>{roomId}</p>
             <p>{gameMode}</p>
             <p>{timeMode}</p>
-        </div>
+        </button>
     );
 };
 

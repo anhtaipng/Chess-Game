@@ -1,6 +1,6 @@
 import {toast} from "react-toastify";
 
-const NotificationCreator = () => {
+const NotificationCreator = (() => {
     const toastSuccessful = (message) =>{
         toast.success(`🦄 ${message}`, {
             position: "top-right",
@@ -35,7 +35,7 @@ const NotificationCreator = () => {
         });
     }
     return {toastWarning, toastSuccessful,toastError};
-}
+})();
 
 
 export default NotificationCreator;

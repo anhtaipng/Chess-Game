@@ -23,7 +23,7 @@ const Hall = () => {
     useEffect(() => {
         getRoomList();
     }, [])
-    const player = useSelector(state => state.user.id);
+    const player = useSelector(state => state.user.id_user);
     const roomStatus = useSelector(state => state.room.room_status);
     const player2 = useSelector(state => state.room.player2);
     const errorMessage = useSelector(state => state.room.room_error_message);
@@ -39,14 +39,14 @@ const Hall = () => {
             return console.log("Get Room list error", e);
         }
     }
-    const tryJoinRoom = (roomID) => {
+    const tryJoinRoom = async (roomID) => {
         const joinRoomInfo = {
             room_id: roomID,
             player: player
         }
         console.log("Trying to join a Room with Info:", joinRoomInfo);
         try {
-            const res = dispatch(joinRoom(joinRoomInfo));
+            const res = await dispatch(joinRoom(joinRoomInfo));
             // should now dispath the room returned to store:
 
             console.log("join event:", res);

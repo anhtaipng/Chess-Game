@@ -2,6 +2,7 @@ import axios from "axios";
 import {userToken} from "../user/userSlice";
 const serverRoot = "http://localhost:9777";
 const roomUrl = `${serverRoot}/games`;
+const joinRoomUrl = `${serverRoot}/games/join`;
 /*
     Body: {
     “player1”: string
@@ -33,7 +34,7 @@ export function join_room(roomJoinInfo){
     console.log('Joining Room',roomJoinInfo);
     return axios({
         method: 'post',
-        url: roomUrl,
+        url: joinRoomUrl,
         data: roomJoinInfo,
         headers: {
             'authorization': userToken,

@@ -36,9 +36,8 @@ export const UserConstant = {
 const initialState = {
     login_status: UserConstant.NOT_LOGGED_IN,
     state: UserConstant.STATE_FETCHING,
-    id_user: "Guest",
+    id_user: "GuestASDASD",
     status: UserConstant.STATUS_OFFLINE,
-    displayName: "Guest",
     ranking: UserConstant.RANKING_NOVICE,
     elo: 1200,
     money: 0,
@@ -172,12 +171,13 @@ export const userSlice = createSlice({
             })
             .addCase(loginUser.fulfilled,(state,action)=>{
                 state.login_status = UserConstant.LOGGED_IN;
-                // let newUser = action.payload;
-                // state = {...state, ...newUser};
+                state.id_user = action.payload.id_user;
                 console.log("login fullfill:", action);
-                console.log("login_token:",action.payload.token)
+                console.log("login_token:",action.payload.token);
+                console.log("State updated:",state);
                 state.user_token = action.payload.token;
                 userToken = action.payload.token;
+
             })
             .addCase(loginUser.rejected,(state,action)=>{
                 state.login_status = UserConstant.LOGGED_IN_FAILED;
@@ -185,6 +185,7 @@ export const userSlice = createSlice({
             .addCase(registerUser.pending,(state)=>{
                 state.login_status = UserConstant.REGISTERING;
             })
+            // ! Sua lai khong dung spread operator 
             .addCase(registerUser.fulfilled,(state,action)=>{
                 state.login_status = UserConstant.REGISTERING_SUCCESS;
                 console.log(action);

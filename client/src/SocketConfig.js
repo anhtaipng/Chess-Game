@@ -1,8 +1,6 @@
 import SockJS from "sockjs-client";
 import Stomp from 'stompjs';
-import {useSelector} from "react-redux";
 import MessageRelayer from "./features/messenger/messageRelayer";
-import MessageObserver from "./features/messenger/messageObserver";
 import { store } from "./app/store";
 
 
