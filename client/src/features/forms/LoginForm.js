@@ -4,6 +4,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {loginUser, UserConstant} from "../../slices/user/userSlice";
 import Loader from 'react-loader-spinner';
 import DismissableAlert from "../alert/DismissableAlert";
+import SocketConfig from '../../SocketConfig';
 
 const LoginForm = props => {
     const dispatch = useDispatch();
@@ -16,6 +17,9 @@ const LoginForm = props => {
             const requestResult = dispatch(loginUser({username, password})).unwrap();
             const testRealResult = async () => await requestResult;
             console.log("Login Result:",testRealResult().token);
+        
+            console.log("SOCKET CONNECTOIN TEST THINH:",SocketConfig,"THINH HAHA: \n",SocketConfig.connectCreation);
+            SocketConfig.connectCreation();
         }
         catch (error){
             console.log("ERROR at Register asd:",error);

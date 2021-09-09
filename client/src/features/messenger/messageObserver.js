@@ -12,6 +12,7 @@ export default class MessageObserver{
         this.moveCallBack = callback;
     }
     reactTo(mess){
+        console.log("Observer receiving Mess:",mess);
         if (this.messageCallBackMap.has(mess)) {
             this.messageCallBackMap.get(mess)();
         }

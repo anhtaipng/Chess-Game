@@ -56,7 +56,7 @@ const MessageRelayer = (() => {
         send(mess);
     }
     // const sendJoinRoom =  (roomID,)
-    return {sendMove, update};
+    return {sendMove, update,registerObserver};
 })();
 export default MessageRelayer;
 // Every time receive message M from socket.
