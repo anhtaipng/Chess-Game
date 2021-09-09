@@ -8,7 +8,7 @@ const client = Stomp.over(new SockJS('http://localhost:9777/socket', null, null)
 
 
 
-client.connect({}, () => {
+client.connect({}, (props) => {
     const userDisplayName = useSelector((state) => state.user.id_user)
     connected = true;
     client.subscribe('/topic/only-user/' + userDisplayName,
