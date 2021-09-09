@@ -26,13 +26,6 @@ public class GameMasterController {
     @Autowired
     GameMaster gameMaster;
 
-    @CrossOrigin
-    @RequestMapping(value = "/test-socket", method = RequestMethod.POST)
-    public ResponseEntity<?> saveUser(@RequestBody Message message) throws Exception {
-        socketSender.send(message);
-        return ResponseEntity.ok(message);
-    }
-
 
     //tao room
     @CrossOrigin
