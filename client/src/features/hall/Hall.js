@@ -6,9 +6,10 @@ import Room from "./Room";
 import {useDispatch, useSelector} from "react-redux";
 import {createRoom, joinRoom, RoomConstant} from "../../slices/room/roomSlice";
 import {GameConstant} from "../../slices/game/gameSlice";
-import WaintingPage from "./WaitingPage";
 import WaitingPage from "./WaitingPage";
 import GameMetaBox from "../chessgame/GameMetaBox";
+import InGameRoom from "../chessgame/InGameRoom";
+import DismissableAlert from "../alert/DismissableAlert";
 
 // class Room{
 //     String id;
@@ -25,6 +26,7 @@ const Hall = () => {
     const player = useSelector(state => state.user.id);
     const roomStatus = useSelector(state => state.room.room_status);
     const player2 = useSelector(state => state.room.player2);
+    const errorMessage = useSelector(state => state.room.room_error_message);
     const dispatch = useDispatch();
 
     const getRoomList = async () => {
@@ -78,6 +80,10 @@ const Hall = () => {
                             <WaitingPage/>
                             <GameMetaBox isWaiting={true}/>
                         </div>
+                    } else if(roomStatus === RoomConstant.ROOM_PLAYING) {
+                        return <InGameRoom/>
+                    } else if (roomStatus === RoomConstant.ROOM_FAILED) {
+                        return <DismissableAlert heading={`Room failed. Something is wrong.`} message={errorMessage ? errorMessage : `UNKNOWN ERRRO`} type={`danger`}/>
                     } else {
                         return <div>
                             <button onClick={() => createNewClassicRoom()}>
@@ -85,16 +91,16 @@ const Hall = () => {
                             </button>
                             <div className={styles.roomListContainer}>
                                 {
-                                    roomList.map((ele) => {
+                                    roomList.map((ele, index) => {
                                         console.log("Room Found:", ele);
-                                        return <Room key={ele.id.toString()} roomId={ele.id}
+                                        return <Room tabIndex={index} key={ele.id.toString()} roomId={ele.id}
                                                      gameMode={ele.gameMode} timeMode={ele.timeMode}
                                                      onClick={() => tryJoinRoom(ele.id)
                                                      }/>
                                     })
                                 }
                             </div>
-                        </div>
+                        </div>;
                     }
                 })()
             }

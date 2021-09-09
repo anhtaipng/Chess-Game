@@ -7,16 +7,13 @@ import noti_icon from '../../images/bell.png';
 import {useDispatch, useSelector} from "react-redux";
 import {UserConstant, userLoggingIn, userRegistering} from "../../slices/user/userSlice";
 import {Link, Route, Switch} from "react-router-dom";
-import {HomePage} from "../homepage/HomePage";
-import GameBoard from "../chessgame/GameBoard";
-import {Counter} from "../counter/Counter";
-import Hall from "../hall/Hall";
+
 
 const Header = props => {
     const iconWidth = "30px";
     const iconHeight = "30px";
     const userLoginStatus = useSelector((state) => state.user.login_status)
-    const userDisplayName = useSelector((state) => state.user.displayName)
+    const userDisplayName = useSelector((state) => state.user.id_user)
     const dispatch = useDispatch();
     return (
         <div className={`${styles.containter} ${userLoginStatus === UserConstant.LOGGING_IN ? styles.blurred : ''}`}>

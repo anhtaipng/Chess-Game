@@ -7,7 +7,10 @@ import DataBoard from "./DataBoard";
 const InGameRoom = () => {
     return (
         <div className={styles.inGameRoom}>
-            <GameMetaBox/>
+            <div>
+                <GameMetaBox/>
+                <ChatBox/>
+            </div>
             <GameBoard/>
             <DataBoard/>
         </div>

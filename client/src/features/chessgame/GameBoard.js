@@ -1,11 +1,15 @@
-import React, {useReducer} from 'react';
+import React, {useReducer, useState} from 'react';
 import styles from './chess.module.css';
 import Square from "./Square";
 import BoardHelper from "../../slices/game/BoardHelper";
 import {Bishop, King, Knight, Pawn, PIECE_CONSTANT, Queen, Rook} from "./Piece";
 import {GameConstant} from "../../slices/game/gameSlice";
-// import MessageRelayer from "../messenger/messageRelayer";
-
+import MessageRelayer from "../messenger/messageRelayer";
+import MoveCreator from "../../slices/game/MoveCreator";
+import MessageObserver from "../messenger/messageObserver";
+import {useSelector} from "react-redux";
+import {store} from "react-notifications-component";
+import NotificationCreator from "../alert/NotificationCreator";
 
 const isEven = (num) => num % 2 === 0;
 const range = (start, stop, step) => Array.from({length: (stop - start) / step + 1}, (_, i) => start + (i * step));
@@ -14,8 +18,12 @@ const GAME_ACTION = {
     USER_MOVED: "USER_MOVED",
     INIT_CLASSIC_GAME: "INIT_CLASSIC_GAME",
     CHOOSE_PIECE: "CHOOSE_PIECE",
-    CHOOSE_DEST: "CHOOSE_DEST"
-
+    MOVE_VALIDATED: "CHOOSE_DEST",
+}
+const TURN_CONSTANTT = {
+    ODD_TURN: "ODD",
+    EVEN_TURN:"EVEN",
+    SPECTATE_ONLY: "SPEC"
 }
 const initialState = {
     pieces: new Map(),
@@ -71,23 +79,6 @@ const init = (gameMode) => {
 
 const reducer = (state, action) => {
     switch (action.type) {
-        case GAME_ACTION.USER_MOVED: {
-            const pieces_copy = new Map(state.pieces);
-            const moveInfo = action.payload.move;
-            const pos1 = BoardHelper.getPosObjectFromCharNum(moveInfo.piece_start_pos);
-            const pos2 = BoardHelper.getPosObjectFromCharNum(moveInfo.piece_end_pos);
-            if (BoardHelper.checkMoveValidity(pos1, pos2, pieces_copy)) {
-                const pos1HashCode = BoardHelper.getHashCodeFromPos(pos1);
-                const pos2HashCode = BoardHelper.getHashCodeFromPos(pos2);
-                const pieceMoved = pieces_copy.get(pos1HashCode);
-                pieces_copy.delete(pos1HashCode);
-                if (pieces_copy.has(pos2HashCode)) {
-                    pieces_copy.delete(pos2HashCode);
-                }
-                pieces_copy.set(pos1HashCode, pieceMoved);
-            } else throw new Error("Invalid move");
-            return {...state, pieces: pieces_copy};
-        }
         case GAME_ACTION.INIT_CLASSIC_GAME: {
             return init(GameConstant.MODE_GAME_CLASSIC);
         }
@@ -96,34 +87,30 @@ const reducer = (state, action) => {
             let src_piece = action.payload.srcHashCode;
             return {...state, pieceSrcHashCode: src_piece};
         }
-        case GAME_ACTION.CHOOSE_DEST:
+        case GAME_ACTION.MOVE_VALIDATED:
             let piece_dest = action.payload.destHashCode;
+            let piece_src = action.payload.srcHashCode;
             let pieces_fallen = [...state.captured_pieces];
-            if (state.pieceSrcHashCode) {
-                const pieces_copy = new Map(state.pieces);
-                // Try execute the move;
-                const pos1 = BoardHelper.getPosFromHashCode(state.pieceSrcHashCode);
-                const pos2 = BoardHelper.getPosFromHashCode(piece_dest);
-                try {
-                    if (BoardHelper.checkMoveValidity(pos1, pos2, pieces_copy)) {
-                        const srcHashCode = state.pieceSrcHashCode;
-                        const pieceMoved = pieces_copy.get(srcHashCode);
-                        pieces_copy.delete(srcHashCode);
-                        if (pieces_copy.has(piece_dest)) {
-                            const piece_dead = pieces_copy.get(piece_dest);
-                            pieces_fallen.push(piece_dead);
-                            pieces_copy.delete(piece_dest);
-                        }
-                        pieces_copy.set(piece_dest, pieceMoved);
-                        const newTurn = state.currentTurn + 1;
-                        // MessageRelayer.send()
-                        return {...state, pieces: pieces_copy, pieceSrcHashCode: undefined, currentTurn: newTurn,captured_pieces: pieces_fallen};
-                    }
-                } catch (e) {
-                    console.log(e);
-                }
+            const pieces_copy = new Map(state.pieces);
+            // Try execute the move;
+            const srcHashCode = piece_src;
+            const pieceMoved = pieces_copy.get(srcHashCode);
+            pieces_copy.delete(srcHashCode);
+            if (pieces_copy.has(piece_dest)) {
+                const piece_dead = pieces_copy.get(piece_dest);
+                pieces_fallen.push(piece_dead);
+                pieces_copy.delete(piece_dest);
             }
-            return {...state, pieceSrcHashCode: undefined};
+            pieces_copy.set(piece_dest, pieceMoved);
+            const newTurn = state.currentTurn + 1;
+            // MessageRelayer.send()
+            return {
+                ...state,
+                pieces: pieces_copy,
+                pieceSrcHashCode: undefined,
+                currentTurn: newTurn,
+                captured_pieces: pieces_fallen
+            };
         default:
             throw new Error();
     }
@@ -134,25 +121,70 @@ const GameBoard = () => {
     // const sampleMove = creatMove(1,"P","A2","A4");
     // console.log("Sample move created:",sampleMove,JSON.stringify(sampleMove));
     const [state, dispatch] = useReducer(reducer, initialState, undefined);
+    const thisUser = useSelector(state.user.id);
+    const thisPlayer1 = useSelector(state.room.player1);
+    const thisPlayer2 = useSelector(state.room.player2);
+    const myValidTurn = (() => {
+        if (thisUser === thisPlayer1.id) {
+            return TURN_CONSTANTT.ODD_TURN;
+        }
+        else if (thisUser === thisPlayer2.id) {
+            return TURN_CONSTANTT.EVEN_TURN;
+        }
+        else return TURN_CONSTANTT.SPECTATE_ONLY;
+    })();
     const initClassicGame = () => {
         dispatch({type: GAME_ACTION.INIT_CLASSIC_GAME});
         console.log(state);
     }
+    // Message related computations
+    const messageObserver = new MessageObserver();
+    const socketMoveMessageHandler = (moveInfo) => {
+        console.log("Board Received move:", moveInfo);
+        const endPosHashCode = BoardHelper.getHashCodeFromCharNum(moveInfo.piece_end_pos);
+        const startPosHashCode = BoardHelper.getHashCodeFromCharNum(moveInfo.piece_start_pos);
+        dispatch({type: GAME_ACTION.MOVE_VALIDATED,payload:{
+                srcHashCode: startPosHashCode,
+                destHashCode: endPosHashCode
+            }})
+    }
+
+    messageObserver.registerMoveCallBack(socketMoveMessageHandler);
+    // Piece Choosing and execute move Logic
+    const checkValidTurn = () =>{
+        if(myValidTurn === TURN_CONSTANTT.ODD_TURN && state.currentTurn % 2 === 1){
+            return true;
+        }
+        else if(myValidTurn === TURN_CONSTANTT.ODD_TURN && state.currentTurn % 2 === 0){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
     const handleSquareClick = (posHashCode) => {
-        if (!state.pieceSrcHashCode) {
-            dispatch({
-                type: GAME_ACTION.CHOOSE_PIECE, payload: {
-                    srcHashCode: posHashCode
-                }
-            })
-            console.log("Piece chosen:" + posHashCode);
-        } else {
-            dispatch({
-                type: GAME_ACTION.CHOOSE_DEST, payload: {
-                    destHashCode: posHashCode
-                }
-            })
-            console.log("Moved To" + posHashCode)
+        if(checkValidTurn()) {
+            if (!state.pieceSrcHashCode) {
+                dispatch({
+                    type: GAME_ACTION.CHOOSE_PIECE, payload: {
+                        srcHashCode: posHashCode
+                    }
+                })
+                console.log("Piece chosen:" + posHashCode);
+            } else {
+                // Send socket move to server
+                const pieceMoved = state.pieces.get(state.srcHashCode);
+                const moveInfo = MoveCreator.creatMove(state.currentTurn, pieceMoved.type, state.srcHashCode, posHashCode);
+                console.log("Validating pieceMoved:", moveInfo);
+                MessageRelayer.sendMove(moveInfo);
+                console.log("Trying to move To" + posHashCode)
+            }
+        }
+        else{
+            const notification = NotificationCreator.createNotification("Invalid Turn Detected", "Đợi đến lượt mình đi ông nội", "danger", "top", "top-right");
+            store.addNotification(
+                ...notification
+            )
         }
     }
     return (

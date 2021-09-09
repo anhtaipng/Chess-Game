@@ -5,6 +5,8 @@ import {userToken} from "../user/userSlice";
 export const RoomConstant = {
     ROOM_PENDING: "PENDING",
     ROOM_CREATED: "CREATED",
+    ROOM_FAILED: "FAILED",
+    ROOM_PLAYING: "PLAYING",
     MODE_TIME_RABBIT: "RABBIT",
     MODE_TIME_BULLET: "BULLET",
     MODE_TIME_NORMAL: "NORMAL",
@@ -15,26 +17,33 @@ export const RoomConstant = {
 
 export const createRoom = createAsyncThunk(
     "room/createRoom",
-    async(roomCreateInfo,{rejectedWithValue}) =>{
+    async(roomCreateInfo,{rejectWithValue}) =>{
         try{
             const response = await create_room(roomCreateInfo);
             return response.data;
         }
         catch (e){
-            return rejectedWithValue({error: e.message});
+            if (!e.response) {
+                throw e;
+            }
+
+            return rejectWithValue(e.response.data);
         }
     }
 )
 export const joinRoom = createAsyncThunk(
     "room/joinRoom",
-    async(roomJoinInfo,{rejectedWithValue}) =>{
+    async(roomJoinInfo,{rejectWithValue}) =>{
         try{
             const response = await create_room(roomJoinInfo);
             return response.data;
         }
         catch (e){
-            return rejectedWithValue({error: e.message});
-        }
+            if (!e.response) {
+                throw e;
+            }
+
+            return rejectWithValue(e.response.data);        }
     }
 )
 
@@ -54,6 +63,7 @@ const initialState = {
     time_player_1: undefined,
     time_player_2: undefined,
     chat_messages: [],
+    room_error_mess:undefined
 }
 
 
@@ -61,66 +71,73 @@ const initialState = {
 export const roomSlice = createSlice({
     name: "room", initialState,
     reducers: {
-        updatePlayerInfo: (state,action) =>{
-            if(action.payload.playerNum === 1){
+        updatePlayerInfo: (state, action) => {
+            if (action.payload.playerNum === 1) {
                 state.player1 = action.payload.playerInfo;
-            }
-            else if(action.payload.playerNum === 2){
+            } else if (action.payload.playerNum === 2) {
                 state.player2 = action.payload.playerInfo;
             }
         },
-        decreaseClock:(state,action)=>{
-            if(action.payload.playerNum === 1){
+        decreaseClock: (state, action) => {
+            if (action.payload.playerNum === 1) {
                 state.time_player_1 -= action.payload.amount;
-            }
-            else if(action.payload.playerNum === 2){
+            } else if (action.payload.playerNum === 2) {
                 state.time_player_2 -= action.payload.amount;
             }
         },
-        increaseClock:(state,action)=>{
-            if(action.payload.playerNum === 1){
+        increaseClock: (state, action) => {
+            if (action.payload.playerNum === 1) {
                 state.time_player_1 += action.payload.amount;
-            }
-            else if(action.payload.playerNum === 2){
+            } else if (action.payload.playerNum === 2) {
                 state.time_player_2 += action.payload.amount;
             }
         },
-        setMode:(state,action)=>{
+        setMode: (state, action) => {
             state.variant = action.payload.variant;
             state.time_mode = action.payload.time_mode;
         },
-        addSpectator:(state,action)=>{
+        addSpectator: (state, action) => {
             state.spectators.push(action.payload.spectator);
         },
-        addChatMessage:(state,action)=>{
-            state.chat_messages.push(action.payload.message);
+        addChatMessage: (state, action) => {
+            state.chat_messages.push(action.payload);
         }
     },
-    extraReducers:(builder) =>{
+    extraReducers: (builder) => {
         builder
-            .addCase(createRoom.pending, (state, action) =>{
-                console.log("Creat room with token",userToken);
+            .addCase(createRoom.pending, (state, action) => {
+                console.log("Creat room with token", userToken);
                 state.room_status = RoomConstant.ROOM_PENDING;
             })
-            .addCase(createRoom.fulfilled, (state, action) =>{
-                console.log("Room Info returned by Server:",action.payload);
+            .addCase(createRoom.fulfilled, (state, action) => {
+                console.log("Room Info returned by Server:", action.payload);
                 state.room_id = action.payload.room_id;
                 state.variant = action.payload.game_mode;
                 state.time_mode = action.payload.time_mode;
                 state.room_status = RoomConstant.ROOM_CREATED;
-                console.log("Room Created with ID:",action.payload.room_id);
+                console.log("Room Created with ID:", action.payload.room_id);
             })
-            .addCase(joinRoom.pending, (state, action) =>{
+            .addCase(createRoom.rejected, (state, action) => {
+                state.room_status = RoomConstant.ROOM_FAILED;
+                state.room_error_message = action.payload;
+            })
+            .addCase(joinRoom.pending, (state, action) => {
                 state.room_status = RoomConstant.ROOM_PENDING;
             })
-            .addCase(joinRoom.fulfilled, (state, action) =>{
+            .addCase(joinRoom.fulfilled, (state, action) => {
                 state.room_id = action.payload.room_id;
                 state.variant = action.payload.game_mode;
                 state.time_mode = action.payload.time_mode;
+                state.player1 = action.payload.player1;
+                state.player2 = action.payload.player2;
                 state.room_status = RoomConstant.ROOM_CREATED;
+            })
+            .addCase(joinRoom.rejected, (state, action) => {
+                state.room_status = RoomConstant.ROOM_FAILED;
+                state.room_error_messsage = action.payload;
             })
     }
 });
 
 export default roomSlice.reducer;
-export const {updatePlayerInfo,decreaseClock,increaseClock,setMode,addSpectator,addChatMessage} = roomSlice.actions;
+export const {updatePlayerInfo,increaseClock,setMode,addSpectator,addChatMessage} = roomSlice.actions;

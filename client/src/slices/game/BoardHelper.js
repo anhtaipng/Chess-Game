@@ -36,6 +36,13 @@ const BoardHelper = (() => {
     function getPosFromHashCode(hash){
         return {y:Math.floor(hash/10),x:hash%10};
     }
+    function getCharNumFromHashCode(hash){
+        const {y, x} = getPosFromHashCode(hash);
+        return `${String.fromCharCode(65 +x)}${y}`;
+    }
+    function getHashCodeFromCharNum(charNumString){
+        return getHashCodeFromPos(getPosObjectFromCharNum(charNumString));
+    }
     function comparesPosEqual(posObject1,posObject2){
         return posObject1.x === posObject2.x || posObject1.y === posObject2.y;
     }
@@ -175,7 +182,7 @@ const BoardHelper = (() => {
     }
     return {checkIfKingIsChecked,checkCleanPath,isConnectedByDiagonal,isConnectedByLine,isConnectedByKingMove,
         isConnectedByKnightMove,getPosFromHashCode,getPosObjectFromXY,getPosObjectFromCharNum,getPosObjectFromNumNum,getSpotsBetweenTwoPos
-        ,convertCharNumToNumNum,convertNumNumToCharNum,isOfOppositeRoyalty,getMinMax,comparesPosEqual,isCleanPath,getHashCodeFromPos,checkMoveValidity,getPieceAtPos};
+        ,convertCharNumToNumNum,convertNumNumToCharNum,isOfOppositeRoyalty,getMinMax,comparesPosEqual,isCleanPath,getHashCodeFromPos,checkMoveValidity,getPieceAtPos,getCharNumFromHashCode,getHashCodeFromCharNum};
 })();
 
 export default BoardHelper;

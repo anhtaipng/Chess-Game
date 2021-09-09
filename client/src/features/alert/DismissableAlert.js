@@ -1,7 +1,7 @@
 import Alert from 'react-bootstrap/Alert'
 import {useState} from "react";
 
-function AlertDismissible({heading,message,type}) {
+function DismissibleAlert({heading,message,type}) {
     const [show, setShow] = useState(true);
 
     return (
@@ -22,4 +22,4 @@ function AlertDismissible({heading,message,type}) {
     );
 }
 
-export default AlertDismissible;
+export default DismissibleAlert;

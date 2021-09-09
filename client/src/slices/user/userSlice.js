@@ -36,7 +36,7 @@ export const UserConstant = {
 const initialState = {
     login_status: UserConstant.NOT_LOGGED_IN,
     state: UserConstant.STATE_FETCHING,
-    id: "usjksadfl",
+    id_user: "Guest",
     status: UserConstant.STATUS_OFFLINE,
     displayName: "Guest",
     ranking: UserConstant.RANKING_NOVICE,
@@ -176,7 +176,7 @@ export const userSlice = createSlice({
                 // state = {...state, ...newUser};
                 console.log("login fullfill:", action);
                 console.log("login_token:",action.payload.token)
-                state.move_token = action.payload.token;
+                state.user_token = action.payload.token;
                 userToken = action.payload.token;
             })
             .addCase(loginUser.rejected,(state,action)=>{

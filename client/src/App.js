@@ -10,8 +10,9 @@ import LoginForm from "./features/forms/LoginForm";
 import RegisterForm from "./features/forms/RegisterForm";
 import {Counter} from "./features/counter/Counter";
 import Hall from "./features/hall/Hall";
-
-
+import ReactNotification from 'react-notifications-component';
+import 'react-notifications-component/dist/theme.css';
+import 'animate.css/animate.min.css'
 const renderSwitch = (login_status)=> {
     switch (login_status){
         case UserConstant.LOGGING_IN || UserConstant.LOGGING_IN_LOADING ||UserConstant.LOGGED_IN_FAILED:
@@ -50,11 +51,12 @@ function App() {
     const logging_status = useSelector(state => state.user.login_status);
     return (
         <div className="App">
-            <BrowserRouter>
-                  <Header/>
-                  {renderSwitch(logging_status)}
-            </BrowserRouter>
-
+            <ReactNotification>
+                <BrowserRouter>
+                    <Header/>
+                    {renderSwitch(logging_status)}
+                </BrowserRouter>
+            </ReactNotification>
         </div>
     );
 }

@@ -15,7 +15,7 @@ const LoginForm = props => {
         try{
             const requestResult = dispatch(loginUser({username, password})).unwrap();
             const testRealResult = async () => await requestResult;
-            console.log("regResult:",testRealResult().token);
+            console.log("Login Result:",testRealResult().token);
         }
         catch (error){
             console.log("ERROR at Register asd:",error);
