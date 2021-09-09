@@ -30,7 +30,9 @@ public class ChessGameView {
         socketSender.sendMess(room, player1, player2, mess);
     }
     // Send Move
-    public void sendMove(MoveInfo move){
+    public void sendMove(String playerID,MoveInfo move){
+        String moveToSend = String.format("%s Move %s %s", this.room, playerID, gson.toJson(move));
+        System.out.println("Server Send Move Message:" + moveToSend);
         sendTo2Players("MOVE " + gson.toJson(move));
     }
     // Send Noti

@@ -10,7 +10,6 @@ import RegisterForm from "./features/forms/RegisterForm";
 import {Counter} from "./features/counter/Counter";
 import Hall from "./features/hall/Hall";
 import 'react-notifications-component/dist/theme.css';
-import 'animate.css/animate.min.css'
 import {ToastContainer} from "react-toastify";
 import TestComponent from "./features/TestComponent";
 
@@ -55,7 +54,9 @@ function App() {
             <div className="App">
                 <BrowserRouter>
                     <Header/>
-                    {renderSwitch(logging_status)}
+                    <div className="main">
+                        {renderSwitch(logging_status)}
+                    </div>
                 </BrowserRouter>
             </div>
             <ToastContainer/>
