@@ -7,6 +7,7 @@ import noti_icon from '../../images/bell.png';
 import {useDispatch, useSelector} from "react-redux";
 import {UserConstant, userLoggingIn, userRegistering} from "../../slices/user/userSlice";
 import {Link, Route, Switch} from "react-router-dom";
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const Header = props => {
