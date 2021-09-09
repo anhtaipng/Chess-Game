@@ -1,5 +1,6 @@
 import {addChatMessage, addSpectator, updatePlayerInfo} from "../../slices/room/roomSlice";
 import {store} from "../../app/store";
+import sendMess from "../../SocketConfig";
 export const MessageConstant = {
     MESSAGE_CODE: "Message",
     PLAYER_JOIN_CODE: "PlayerJoin",
@@ -47,7 +48,8 @@ const MessageRelayer = (() => {
     }
     const send = (mess) => {
         // Do some thing to send the mess to the server:
-        console.log("Sending the mess to server:\n", mess)
+        sendMess(mess);
+        console.log("Sending the mess to server:\n", mess);
     }
     const sendMove = (moveInfo) => {
         const mess = `${state.room.room_id} ${MessageConstant.MOVE_CODE} ${state.user.id} ${moveInfo}`;
