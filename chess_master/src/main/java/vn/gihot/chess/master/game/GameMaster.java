@@ -59,11 +59,16 @@ public class GameMaster {
 
 
     //join room, neu la nguoi thu 2 thi bat dau game luon
-    public void joinRoom(String id_room, String player_id){
+    public String joinRoom(String id_room, String player_id){
         playerInRooms.get(id_room).add(player_id);
-        if (playerInRooms.get(id_room).size() == 2)
+        if (playerInRooms.get(id_room).size() == 2) {
             createGame(rooms.get(id_room), new Player(playerInRooms.get(id_room).get(0), "white", Type.WHITE),
                     new Player(playerInRooms.get(id_room).get(0), "black", Type.BLACK));
+            //System.out.println(id_room + " PlayerJoin " + player_id + " 1200");
+            return id_room + " PlayerJoin " + player_id + " 1200";
+        }
+        //System.out.println(id_room + " SpectatorJoin " + player_id);
+        return id_room + " SpectatorJoin " + player_id;
     }
 
 

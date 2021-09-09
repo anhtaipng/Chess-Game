@@ -39,14 +39,14 @@ public class GameMasterController {
         return ResponseEntity.status(401).body("Authorization failed!");
     }
 
+
+    //can xem lai B join room
     //JOIN ROOM
     @CrossOrigin
     @RequestMapping(value = "/games/join", method = RequestMethod.POST)
-    public ResponseEntity<?> newRoom(@RequestHeader("authorization") String token, @RequestBody JoinRoomRequest joinRoomRequest) throws Exception {
+    public ResponseEntity<?> newRooom(@RequestHeader("authorization") String token, @RequestBody JoinRoomRequest joinRoomRequest) throws Exception {
         if (jwtTokenUlti.validateJwttoken(token)) {
-            gameMaster.joinRoom(joinRoomRequest.getId_room(), joinRoomRequest.getPlayer());
-            //gui cai gi cho th A cap nhat ne
-            //socketSender.send();
+            socketSender.sendOnlyUser(joinRoomRequest.getPlayer(), gameMaster.joinRoom(joinRoomRequest.getId_room(), joinRoomRequest.getPlayer()));
             return ResponseEntity.ok(gameMaster.getGames().get(joinRoomRequest.getId_room()).getModel());
         }
         return ResponseEntity.status(401).body("Authorization failed!");
