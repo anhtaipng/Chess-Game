@@ -8,7 +8,7 @@ import ChatBox from "./ChatBox";
 const InGameRoom = () => {
     return (
         <div className={styles.inGameRoom}>
-            <div>
+            <div className={styles.metaContainer}>
                 <GameMetaBox/>
                 <ChatBox/>
             </div>

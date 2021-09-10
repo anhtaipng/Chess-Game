@@ -2,6 +2,7 @@ package vn.gihot.chess.master.model.game.board;
 
 import vn.gihot.chess.master.model.exception.IllegalMoveException;
 import vn.gihot.chess.master.model.exception.InvalidDestinationException;
+import vn.gihot.chess.master.model.exception.InvalidPositionFormatException;
 import vn.gihot.chess.master.model.exception.UnSyncedMoveTurnException;
 import vn.gihot.chess.master.model.game.piece.*;
 import vn.gihot.chess.master.model.move.MoveInfo;
@@ -18,9 +19,11 @@ public class ClassicBoard extends Board {
     private final ArrayList<Piece> blackKingAttackers;
     // This data structure is used for checking for 3 fold repetition
     private final HashMap<Integer, Integer> boardStateHashCodes;
+
     public ArrayList<Piece> getAttackersFromType(Type attackedSide) {
         return (attackedSide == Type.WHITE) ? whiteKingAttackers : blackKingAttackers;
     }
+
     public King getWhiteKing() {
         return kings.get(0);
     }
@@ -115,14 +118,13 @@ public class ClassicBoard extends Board {
     public GameEndType checkEndGame() {
         // Check for stale mate
         Type possibleMatedSide = (getWhiteKing().isChecked()) ? Type.WHITE : Type.BLACK;
-        if(getAttackersFromType(Type.WHITE) != null && getAttackersFromType(Type.BLACK) != null){
-            if(isCheckMated()){
+        if (getAttackersFromType(Type.WHITE) != null && getAttackersFromType(Type.BLACK) != null) {
+            if (isCheckMated()) {
                 return (possibleMatedSide == Type.WHITE) ? GameEndType.BLACK_CHECK_MATE_ENDED : GameEndType.WHITE_CHECK_MATE_ENDED;
             }
         }
         // Check for three_time repetition
-        if(checkForThreeFoldRep()) return GameEndType.THREE_FOLD_REPETITION_ENDED;
-
+        if (checkForThreeFoldRep()) return GameEndType.THREE_FOLD_REPETITION_ENDED;
 
 
         return GameEndType.NOT_END_YET;
@@ -139,24 +141,25 @@ public class ClassicBoard extends Board {
     }
 
     // Check for draw by three-fold-repetition:
-    public boolean checkForThreeFoldRep(){
+    public boolean checkForThreeFoldRep() {
         Integer currentState = this.hashCode();
         if (boardStateHashCodes.containsKey(currentState)) {
-            int stateCount = boardStateHashCodes.get(currentState) +1;
+            int stateCount = boardStateHashCodes.get(currentState) + 1;
             boardStateHashCodes.replace(currentState, stateCount);
             return stateCount == 3;
-        }
-        else {
-            boardStateHashCodes.put(currentState,1);
+        } else {
+            boardStateHashCodes.put(currentState, 1);
         }
         return false;
     }
+
     // Check for Stalemate:
     // staleMatedSide: The Side who cannot make any legal move
-    public boolean isStaleMate(Type staleMatedSide){
+    public boolean isStaleMate(Type staleMatedSide) {
         return !thereAreLegalMoves(staleMatedSide) && getAttackersFromType(staleMatedSide).size() == 0;
     }
-    public boolean thereAreLegalMoves(Type sideToCheck){
+
+    public boolean thereAreLegalMoves(Type sideToCheck) {
         HashMap<Piece, ArrayList<Position>> pinnedPieceAndItsPinRay = new HashMap<>();
         Type enemyRoyalty = BoardHelper.getEnemyRoyalty(sideToCheck);
         for (Piece possibleAttker : getAlivePieceListFromType(BoardHelper.getEnemyRoyalty(sideToCheck))) {
@@ -164,7 +167,7 @@ public class ClassicBoard extends Board {
                 ArrayList<Position> possibleAttackerRay = BoardHelper.getConnectedPositionBetweenPos(possibleAttker.getPosition(), getKingFromType(sideToCheck).getPosition());
                 for (Piece possiblyPinnedPiece : getAlivePieceListFromType(sideToCheck)) {
                     if (possibleAttackerRay.contains(possiblyPinnedPiece.getPosition())) {
-                        pinnedPieceAndItsPinRay.put(possiblyPinnedPiece,possibleAttackerRay);
+                        pinnedPieceAndItsPinRay.put(possiblyPinnedPiece, possibleAttackerRay);
                     }
                 }
             }
@@ -181,12 +184,12 @@ public class ClassicBoard extends Board {
             }
         }
         // Not in double check
-        else if(getAttackersFromType(sideToCheck).size() < 2){
+        else if (getAttackersFromType(sideToCheck).size() < 2) {
             return checkIfStillCanBeDefended();
-        }
-        else return checkIfKingStillCanMove(sideToCheck);
+        } else return checkIfKingStillCanMove(sideToCheck);
         return false;
     }
+
     // This should be called only when one of the kings is checked
     public boolean isCheckMated() {
         Type possibleMatedSide = (getWhiteKing().isChecked()) ? Type.WHITE : Type.BLACK;
@@ -194,7 +197,7 @@ public class ClassicBoard extends Board {
         King checkedKing = (King) getKingFromType(possibleMatedSide);
         // Check if king can't move anywhere else
         boolean stillCanMove = checkIfKingStillCanMove(possibleMatedSide);
-        if(stillCanMove) return false;
+        if (stillCanMove) return false;
         // Check if any allied piece can protect the king (By blocking the attack or killing the attacker):
         return !checkIfStillCanBeDefended();
     }
@@ -219,13 +222,13 @@ public class ClassicBoard extends Board {
         return stillCanMove;
     }
 
-    public boolean checkIfStillCanBeDefended(){
+    public boolean checkIfStillCanBeDefended() {
         Type possibleMatedSide = (getWhiteKing().isChecked()) ? Type.WHITE : Type.BLACK;
         Type checkingSide = (possibleMatedSide == Type.WHITE) ? Type.BLACK : Type.WHITE;
         King checkedKing = (King) getKingFromType(possibleMatedSide);
         boolean canBeDefended = false;
-        if(getAttackersFromType(possibleMatedSide) == null) canBeDefended = true;
-        else{
+        if (getAttackersFromType(possibleMatedSide) == null) canBeDefended = true;
+        else {
             for (Piece attacker : getAttackersFromType(checkingSide)) {
                 boolean canCounterAttack = true;
                 for (Piece defender : getAlivePieceListFromType(possibleMatedSide)) {
@@ -239,7 +242,7 @@ public class ClassicBoard extends Board {
                     }
                     undoTryMove(piecesChanged);
                     // Check if can block the attack
-                    if(attacker instanceof Rook || attacker instanceof Queen || attacker instanceof Bishop){
+                    if (attacker instanceof Rook || attacker instanceof Queen || attacker instanceof Bishop) {
                         for (Position pos : BoardHelper.getConnectedPositionBetweenPos(checkedKing.getPosition(), attacker.getPosition())) {
                             if (defender.canReachTo(pos)) {
                                 canBeDefended = true;
@@ -247,10 +250,10 @@ public class ClassicBoard extends Board {
                             }
                         }
                     }
-                    if(canBeDefended) break;
+                    if (canBeDefended) break;
                 }
                 canBeDefended = canBeDefended || canCounterAttack;
-                if(!canBeDefended) break;
+                if (!canBeDefended) break;
             }
         }
         return !canBeDefended;
@@ -269,13 +272,14 @@ public class ClassicBoard extends Board {
             occupiedPositions.put(piecesChanged.second.getPosition(), piecesChanged.second);
         }
     }
-    public Pair<Piece,Piece> tryMove(Piece piece, Position endPos) {
+
+    public Pair<Piece, Piece> tryMove(Piece piece, Position endPos) {
         Piece pieceRemoved = null;
         if (occupiedPositions.containsKey(endPos)) {
             pieceRemoved = occupiedPositions.remove(endPos);
         }
         occupiedPositions.put(endPos, piece);
-        return new Pair<Piece,Piece>(piece,pieceRemoved);
+        return new Pair<Piece, Piece>(piece, pieceRemoved);
     }
 
     /* MoveInfo:
@@ -289,48 +293,46 @@ public class ClassicBoard extends Board {
      "en_passant": "true/false"
     */
     @Override
-    public void processMove(MoveInfo move) {
-        try {
-            if(!moveStack.isEmpty()){
-                int prevMoveTurn = moveStack.get(moveStack.size() - 1).getTurn();
-                int thisMoveTurn = move.getTurn();
-                if (prevMoveTurn != thisMoveTurn - 1) throw new UnSyncedMoveTurnException(prevMoveTurn + 1, thisMoveTurn);
-            }
-            Type royalty = move.getPlayerType();
-            Type enemyRoyalty = move.getOpponentType();
-            King moverKing = (King) getKingFromType(royalty);
-            Position startPos = move.getStartPosition();
-            Position endPos = move.getEndPosition();
-            // Check if King is in check after move
-            // (1) Try removing the moved piece from the pos:
-            Piece pieceMoved = occupiedPositions.get(startPos);
-            // Check move legality:
-            if (!checkLegalMove(move)) {
-                throw new IllegalMoveException("Cannot Suicide (King is check or unsaved from Check)");
-            }
-            // Check if it is a castle
-            if (move.getCastling()) {
-                Rook castlingRook = findCastlingRook(royalty, endPos);
-                int rookEndY = endPos.getY();
-                int rookEndX = (endPos.getX() == 3) ? 3 : 6;
-                Position rookEndPos = BoardHelper.getPosFromCoord(rookEndX, rookEndY);
-                pickThenPlacePiece(castlingRook, rookEndPos, move.getTurn());
-                pickThenPlacePiece(pieceMoved, endPos, move.getTurn());
-            }
-            // Check if reachable from current Position
-            else if (move.getPromoting()) {
-                occupiedPositions.remove(startPos);
-                addPiece(move.getPromotedClass(), royalty, endPos);
-            } else if (move.getEnpassant()) {
-                Pawn capturedPawn = (Pawn) occupiedPositions.get(BoardHelper.getPosFromCoord(endPos.getX(), startPos.getY()));
-                removePiece(capturedPawn.getPosition());
-                pickThenPlacePiece(pieceMoved, endPos, move.getTurn());
-            } else {
-                pickThenPlacePiece(pieceMoved, endPos, move.getTurn());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+    public void processMove(MoveInfo move) throws UnSyncedMoveTurnException, InvalidPositionFormatException, IllegalMoveException {
+        if (!moveStack.isEmpty()) {
+            int prevMoveTurn = moveStack.get(moveStack.size() - 1).getTurn();
+            int thisMoveTurn = move.getTurn();
+            if (prevMoveTurn != thisMoveTurn - 1)
+                throw new UnSyncedMoveTurnException(prevMoveTurn + 1, thisMoveTurn);
         }
+        Type royalty = move.getPlayerType();
+        Type enemyRoyalty = move.getOpponentType();
+        King moverKing = (King) getKingFromType(royalty);
+        Position startPos = move.getStartPosition();
+        Position endPos = move.getEndPosition();
+        // Check if King is in check after move
+        // (1) Try removing the moved piece from the pos:
+        Piece pieceMoved = occupiedPositions.get(startPos);
+        // Check move legality:
+        if (!checkLegalMove(move)) {
+            throw new IllegalMoveException("Cannot Suicide (King is check or unsaved from Check)");
+        }
+        // Check if it is a castle
+        if (move.getCastling()) {
+            Rook castlingRook = findCastlingRook(royalty, endPos);
+            int rookEndY = endPos.getY();
+            int rookEndX = (endPos.getX() == 3) ? 3 : 6;
+            Position rookEndPos = BoardHelper.getPosFromCoord(rookEndX, rookEndY);
+            pickThenPlacePiece(castlingRook, rookEndPos, move.getTurn());
+            pickThenPlacePiece(pieceMoved, endPos, move.getTurn());
+        }
+        // Check if reachable from current Position
+        else if (move.getPromoting()) {
+            occupiedPositions.remove(startPos);
+            addPiece(move.getPromotedClass(), royalty, endPos);
+        } else if (move.getEnpassant()) {
+            Pawn capturedPawn = (Pawn) occupiedPositions.get(BoardHelper.getPosFromCoord(endPos.getX(), startPos.getY()));
+            removePiece(capturedPawn.getPosition());
+            pickThenPlacePiece(pieceMoved, endPos, move.getTurn());
+        } else {
+            pickThenPlacePiece(pieceMoved, endPos, move.getTurn());
+        }
+
         // If move is successful --> Notify the pieces so they can update their own metadata.
         moveStack.add(move);
         this.gameEndType = checkEndGame();
@@ -362,40 +364,39 @@ public class ClassicBoard extends Board {
     }
 
     @Override
-    public boolean checkLegalMove(MoveInfo move) {
+    public boolean checkLegalMove(MoveInfo move) throws InvalidPositionFormatException, IllegalMoveException {
         Type royalty = move.getPlayerType();
         Type enemyRoyalty = move.getOpponentType();
         King moverKing = (King) getKingFromType(royalty);
-        try {
-            Position startPos = move.getStartPosition();
-            Position endPos = move.getEndPosition();
-            // Check if King is in check after move
-            // (1) Try removing the moved piece from the pos:
-            Piece pieceMoved = occupiedPositions.get(startPos);
-            Piece pieceRemoved = null;
-            if (!pieceMoved.canReachTo(endPos)) {
-                throw new IllegalMoveException("Cannot reach the destination");
+        Position startPos = move.getStartPosition();
+        Position endPos = move.getEndPosition();
+        // Check if King is in check after move
+        // (1) Try removing the moved piece from the pos:
+        Piece pieceMoved = occupiedPositions.get(startPos);
+        Piece pieceRemoved = null;
+        if (!pieceMoved.canReachTo(endPos)) {
+            throw new IllegalMoveException("Cannot reach the destination");
+        }
+        if (occupiedPositions.containsKey(endPos)) {
+            pieceRemoved = occupiedPositions.remove(endPos);
+            if (pieceRemoved.getType() == royalty)
+                throw new IllegalMoveException("Cannot capture your allies. You Betrayer");
+        }
+        occupiedPositions.put(endPos, pieceMoved);
+        for (Piece attacker : getAlivePieceListFromType(enemyRoyalty)) {
+            if (attacker.canReachTo(moverKing.getPosition())) {
+                throw new IllegalMoveException("Legal Move Should not Leave King Checked Afterwards " +
+                        "\n your king position: " + moverKing.getPosition().toString(), attacker);
             }
-            if (occupiedPositions.containsKey(endPos)) {
-                pieceRemoved = occupiedPositions.remove(endPos);
-                if (pieceRemoved.getType() == royalty)
-                    throw new IllegalMoveException("Cannot capture your allies. You Betrayer");
-            }
-            occupiedPositions.put(endPos, pieceMoved);
-            for (Piece attacker : getAlivePieceListFromType(enemyRoyalty)) {
-                if (attacker.canReachTo(moverKing.getPosition())) {
-                    throw new IllegalMoveException("Legal Move Should not Leave King Checked Afterwards " +
-                            "\n your king position: " + moverKing.getPosition().toString(),attacker);
-                }
-            }
-            // Check if our being checked king is saved
-            if (moverKing.isChecked()) {
-                return false;
-            }
-            // Undo the try (1)
-            occupiedPositions.remove(endPos);
-            occupiedPositions.put(startPos, pieceMoved);
-            if (pieceRemoved != null) occupiedPositions.put(endPos, pieceRemoved);
+        }
+        // Check if our being checked king is saved
+        if (moverKing.isChecked()) {
+            return false;
+        }
+        // Undo the try (1)
+        occupiedPositions.remove(endPos);
+        occupiedPositions.put(startPos, pieceMoved);
+        if (pieceRemoved != null) occupiedPositions.put(endPos, pieceRemoved);
             /*
             Castling is permissible provided all of the following conditions hold:[4]
                 1. The castling must be kingside or queenside.[5]
@@ -405,40 +406,37 @@ public class ClassicBoard extends Board {
                 5. The king does not pass through a square that is attacked by an enemy piece.
                 6. The king does not end up in check. (True of any legal move.)
              */
-            if (move.getCastling()) {
-                // Cannot castle out of check
-                if (moverKing.getPosition() != getKingFromType(royalty).getPosition()) {
-                    throw new IllegalMoveException("Castleing piece must be initialized by King");
-                }
-                if (moverKing.isChecked()) throw new IllegalMoveException("Cannot Castle Out of check");
-                if (moverKing.isMoved()) throw new IllegalMoveException("Moved King can't Castle ");
-                // Find the rook and check for connection
-                Rook rookPiece = findCastlingRook(royalty, endPos);
-                // Check for Castling through check:
-                int minRange = Math.min(moverKing.getPosition().getX(), rookPiece.getPosition().getX());
-                int maxRange = Math.max(moverKing.getPosition().getX(), rookPiece.getPosition().getY());
-                for (int kingX = minRange; kingX <= maxRange; kingX++) {
-                    Position pos = BoardHelper.getPosFromCoord(kingX, moverKing.getPosition().getY());
-                    for (Piece p : getAlivePieceListFromType(enemyRoyalty)) {
-                        if (p.canReachTo(pos)) {
-                            throw new IllegalMoveException("Cannot castle through check");
-                        }
+        if (move.getCastling()) {
+            // Cannot castle out of check
+            if (moverKing.getPosition() != getKingFromType(royalty).getPosition()) {
+                throw new IllegalMoveException("Castleing piece must be initialized by King");
+            }
+            if (moverKing.isChecked()) throw new IllegalMoveException("Cannot Castle Out of check");
+            if (moverKing.isMoved()) throw new IllegalMoveException("Moved King can't Castle ");
+            // Find the rook and check for connection
+            Rook rookPiece = findCastlingRook(royalty, endPos);
+            // Check for Castling through check:
+            int minRange = Math.min(moverKing.getPosition().getX(), rookPiece.getPosition().getX());
+            int maxRange = Math.max(moverKing.getPosition().getX(), rookPiece.getPosition().getY());
+            for (int kingX = minRange; kingX <= maxRange; kingX++) {
+                Position pos = BoardHelper.getPosFromCoord(kingX, moverKing.getPosition().getY());
+                for (Piece p : getAlivePieceListFromType(enemyRoyalty)) {
+                    if (p.canReachTo(pos)) {
+                        throw new IllegalMoveException("Cannot castle through check");
                     }
                 }
-            } else if (move.getEnpassant()) {
-                // Check if the captured pawn can be en-passanted
-                Pawn moverPawn = (Pawn) occupiedPositions.get(move.getStartPosition());
-                Pawn capturedPawn = (Pawn) occupiedPositions.get(BoardHelper.getPosFromCoord(endPos.getX(), startPos.getY()));
-                if (!moverPawn.canEnPassant()) throw new IllegalMoveException("Chosen Pawn cannot EnPassant");
-                if (!capturedPawn.canBeEnpassanted())
-                    throw new IllegalMoveException("Captured pawn can not be En-Passant");
-            } else if (move.getPromoting()) {
-                Pawn promotedPawn = (Pawn) pieceMoved;
-                if ((Math.abs(endPos.getY() - promotedPawn.getStartPos().getY()) != 6))
-                    throw new IllegalMoveException("Pawn doesn't satisfy promote condition");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } else if (move.getEnpassant()) {
+            // Check if the captured pawn can be en-passanted
+            Pawn moverPawn = (Pawn) occupiedPositions.get(move.getStartPosition());
+            Pawn capturedPawn = (Pawn) occupiedPositions.get(BoardHelper.getPosFromCoord(endPos.getX(), startPos.getY()));
+            if (!moverPawn.canEnPassant()) throw new IllegalMoveException("Chosen Pawn cannot EnPassant");
+            if (!capturedPawn.canBeEnpassanted())
+                throw new IllegalMoveException("Captured pawn can not be En-Passant");
+        } else if (move.getPromoting()) {
+            Pawn promotedPawn = (Pawn) pieceMoved;
+            if ((Math.abs(endPos.getY() - promotedPawn.getStartPos().getY()) != 6))
+                throw new IllegalMoveException("Pawn doesn't satisfy promote condition");
         }
         return true;
     }

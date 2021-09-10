@@ -2,7 +2,7 @@ import {toast} from "react-toastify";
 
 const NotificationCreator = (() => {
     const toastSuccessful = (message) =>{
-        toast.success(`🦄 ${message}`, {
+        toast.success(`${message}`, {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
@@ -24,7 +24,7 @@ const NotificationCreator = (() => {
         });
     }
     const toastError = (message) =>{
-        toast.error(`🦄 ${message}!`, {
+        toast.error(`😡 ${message}!`, {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
@@ -34,7 +34,18 @@ const NotificationCreator = (() => {
             progress: undefined,
         });
     }
-    return {toastWarning, toastSuccessful,toastError};
+    const toastMoveErrorWarning = (message)=>{
+        toast.warn(`💩 ${message}!`, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
+    }
+    return {toastWarning, toastSuccessful,toastError,toastMoveErrorWarning};
 })();
 
 

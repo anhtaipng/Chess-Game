@@ -1,0 +1,25 @@
+.chatBoxContainer{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    background-color: #f3c348;
+    border: #2f2f31 solid;
+    margin: 4em;
+    height: 30em;
+    /*flex-flow: row wrap;*/
+    overflow-y: auto;
+}
+.messageTypeBox{
+    margin-top: auto;
+    display: flex;
+    flex-direction: row;
+}
+.messageItem{
+    background-color: #2fd96d;
+    align-self: flex-start;
+    margin: 1em;
+}
+
+

@@ -1,4 +1,13 @@
 .inGameRoom {
     display: flex;
     flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.metaContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    background-color: white;
 }

@@ -1,7 +1,6 @@
 package vn.gihot.chess.master.game.core;
 
-import vn.gihot.chess.master.model.exception.InvalidMoveException;
-import vn.gihot.chess.master.model.exception.InvalidUserException;
+import vn.gihot.chess.master.model.exception.*;
 import vn.gihot.chess.master.model.game.board.Board;
 import vn.gihot.chess.master.model.game.board.BoardFactory;
 import vn.gihot.chess.master.model.game.board.GameEndType;
@@ -56,7 +55,7 @@ public class ChessGameModel {
         }
     }
 
-    public void executeMove(MoveInfo moveInfo) {
+    public void executeMove(MoveInfo moveInfo) throws IllegalMoveException, UnSyncedMoveTurnException, InvalidPositionFormatException {
         board.processMove(moveInfo);
         updatePlayerTurn();
     }

@@ -16,7 +16,7 @@
     font-size: medium;
     border: black solid;
     min-height: 1em;
-    max-height: 20%;
+    max-height: 20vh;
     align-items: center;
     background: var(--back-ground-color);
 }

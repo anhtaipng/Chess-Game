@@ -18,6 +18,7 @@ const GAME_ACTION = {
     INIT_CLASSIC_GAME: "INIT_CLASSIC_GAME",
     CHOOSE_PIECE: "CHOOSE_PIECE",
     MOVE_VALIDATED: "CHOOSE_DEST",
+    UNSELECT_PIECE: "UNSELECT",
 }
 const TURN_CONSTANTT = {
     ODD_TURN: "ODD",
@@ -88,6 +89,9 @@ const reducer = (state, action) => {
             let src_piece = action.payload.srcHashCode;
             return {...state, pieceSrcHashCode: src_piece};
         }
+        case GAME_ACTION.UNSELECT_PIECE:{
+            return {...state, pieceSrcHashCode: undefined};
+        }
         case GAME_ACTION.MOVE_VALIDATED:
             let piece_dest = action.payload.destHashCode;
             let piece_src = action.payload.srcHashCode;
@@ -151,6 +155,13 @@ const GameBoard = () => {
                     const moveInfo = JSON.parse(parts[3]);
                     socketMoveMessageHandler(moveInfo);
                 }
+                else if (parts[1] === MessageConstant.ERROR_MOVE_CODE) {
+                    const message = parts.slice(3).join(" ");
+                    console.log("Receive a move Error:");
+                    NotificationCreator.toastMoveErrorWarning("Invalid Move detected: " + message);
+                    // Clear chosen move:
+                    dispatch({type: GAME_ACTION.UNSELECT_PIECE});
+                }
             });
             console.log("The object return from STOMP Handler is:", handlerReturnObject);
             return () => {
@@ -160,6 +171,16 @@ const GameBoard = () => {
         },[] // Should only subscribe once (This user should not change)
     )
 
+    const socketMoveMessageHandler = (moveInfo) => {
+        console.log("Board Received move:", moveInfo);
+        const endPosHashCode = BoardHelper.getHashCodeFromCharNum(moveInfo.piece_end_pos);
+        const startPosHashCode = BoardHelper.getHashCodeFromCharNum(moveInfo.piece_start_pos);
+        console.log("Dispatch to store Move Validated:", endPosHashCode, startPosHashCode);
+        dispatch({type: GAME_ACTION.MOVE_VALIDATED,payload:{
+                srcHashCode: startPosHashCode,
+                destHashCode: endPosHashCode
+            }})
+    }
 
 
     const myValidTurn = (() =>{
@@ -181,16 +202,7 @@ const GameBoard = () => {
     }
     // Message related computations
 
-    const socketMoveMessageHandler = (moveInfo) => {
-        console.log("Board Received move:", moveInfo);
-        const endPosHashCode = BoardHelper.getHashCodeFromCharNum(moveInfo.piece_end_pos);
-        const startPosHashCode = BoardHelper.getHashCodeFromCharNum(moveInfo.piece_start_pos);
-        console.log("Dispatch to store Move Validated:", endPosHashCode, startPosHashCode);
-        dispatch({type: GAME_ACTION.MOVE_VALIDATED,payload:{
-                srcHashCode: startPosHashCode,
-                destHashCode: endPosHashCode
-            }})
-    }
+
 
     // Piece Choosing and execute move Logic
     const checkValidTurn = () =>{
@@ -215,14 +227,14 @@ const GameBoard = () => {
                 })
                 console.log("Piece chosen:" + posHashCode);
             } else {
+                // ! May add client side check here if needed.
                 // Send socket move to server
-                console.log("Valid Player TURN WITH PIECES:",state);
-                console.log("The piece chosen to move was:",state.pieces.get(state.pieceSrcHashCode));
+                // console.log("The piece chosen to move was:",state.pieces.get(state.pieceSrcHashCode));
                 const pieceMoved = state.pieces.get(state.pieceSrcHashCode);
                 const moveInfo = MoveCreator.creatMove(state.currentTurn, pieceMoved.type, state.pieceSrcHashCode, posHashCode);
-                console.log("Validating pieceMoved:", moveInfo);
+                console.log("send move info to server for validation:", moveInfo);
                 MessageRelayer.sendMove(moveInfo);
-                console.log("Trying to move To" + posHashCode)
+                // console.log("Trying to move To" + posHashCode)
             }
         }
         else{
@@ -243,9 +255,9 @@ const GameBoard = () => {
                                 const image = (() =>{
                                     const mapCopy = new Map(state.pieces);
                                     if (mapCopy.has(hashCode)) {
-                                        console.log("Piece image return undefined: Piece is not in Map",hashCode, state);
+                                        // console.log("Piece image return undefined: Piece is not in Map",hashCode, state);
                                         const piece = mapCopy.get(hashCode);
-                                        console.log("Piece: ", piece);
+                                        // console.log("Piece: ", piece);
                                         return piece.image;
                                     }
                                     else{
@@ -254,10 +266,11 @@ const GameBoard = () => {
                                     }
                                 })();
                             // console.log("Piece Info",state);
+                                const pieceSelected = (hashCode === state.pieceSrcHashCode);
                                 return <Square tabIndex={hashCode.toString()} key={hashCode.toString()}
                                                posHashCode={hashCode}
                                                dispatch={dispatch} isLightSquare={isLightSquare} image={image}
-                                               onClick={(hashCode) => handleSquareClick(hashCode)}
+                                               onClick={(hashCode) => handleSquareClick(hashCode)} isSelected={pieceSelected}
                                 />
                             }
                         )

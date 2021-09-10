@@ -1,5 +1,8 @@
 package vn.gihot.chess.master.model.game.board;
 
+import vn.gihot.chess.master.model.exception.IllegalMoveException;
+import vn.gihot.chess.master.model.exception.InvalidPositionFormatException;
+import vn.gihot.chess.master.model.exception.UnSyncedMoveTurnException;
 import vn.gihot.chess.master.model.game.pattern.ChessObserver;
 import vn.gihot.chess.master.model.game.pattern.ChessSubject;
 import vn.gihot.chess.master.model.game.piece.Piece;
@@ -71,9 +74,9 @@ public abstract class Board implements ChessSubject {
         return occupiedPositions.containsKey(BoardHelper.getPosFromCoord(x, y));
     }
 
-    public abstract void processMove(MoveInfo move);
+    public abstract void processMove(MoveInfo move) throws UnSyncedMoveTurnException, InvalidPositionFormatException, IllegalMoveException;
 
-    public abstract boolean checkLegalMove(MoveInfo move);
+    public abstract boolean checkLegalMove(MoveInfo move) throws InvalidPositionFormatException, IllegalMoveException;
 
     //    public abstract void executeMove(MoveInfo move);
     public abstract void redoMove(MoveInfo move);

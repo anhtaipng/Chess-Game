@@ -43,16 +43,23 @@ public class GameInstance {
             throw new InvalidUserException("Malicious user tried to interfere with room:" + model.getRoom().getId());
         }
         try {
+            // Check for some game metaData Error
             model.checkCurrentPlayerTurn(playerID);
             model.checkMoveValidity(move);
         } catch (Exception e) {
             // Should actually terminate the game.
             e.printStackTrace();
-            view.signalErrorGame();
+            view.signalErrorGame(e.getMessage());
         }
-        // If everything seems okay
-        model.executeMove(move);
-        view.sendMove(playerID,move);
+        // If all meta data seems okay. Try execute the move (May still throw logic error)
+        try{
+            model.executeMove(move);
+            view.sendMove(playerID,move);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            view.notifyMoveError(playerID, e.getMessage());
+        }
         if (model.getEndGameResult() != GameEndType.NOT_END_YET) {
             view.notifyGameEnd(model.getEndGameResult());
         }

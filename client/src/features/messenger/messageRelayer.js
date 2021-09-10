@@ -7,7 +7,8 @@ export const MessageConstant = {
     MESSAGE_CODE: "Message",
     PLAYER_JOIN_CODE: "PlayerJoin",
     SPECTATOR_JOIN_CODE: "SpectatorJoin",
-    MOVE_CODE: "Move"
+    MOVE_CODE: "Move",
+    ERROR_MOVE_CODE: "ErrorMove"
 }
 
 const MessageRelayer = (() => {
@@ -33,7 +34,8 @@ const MessageRelayer = (() => {
         console.log("Spitted String is:", parts, parts[1]);
         switch (parts[1]) {
             case MessageConstant.MESSAGE_CODE:
-                dispatch(addChatMessage({user: parts[2], message: parts[3]}));
+                const message = parts.slice(3).join(" ");
+                dispatch(addChatMessage({user: parts[2], message: message}));
                 break;
             case MessageConstant.PLAYER_JOIN_CODE:
                 const state = store.getState();
@@ -47,8 +49,6 @@ const MessageRelayer = (() => {
                 dispatch(addSpectator({spectator: parts[2]}));
                 break;
             /* falls through */
-            case MessageConstant.MOVE_CODE:
-                // dispatch(addMove());
             default:
                 console.log("Redux don't care về message này:)");
         }
@@ -63,8 +63,13 @@ const MessageRelayer = (() => {
         const mess = `${state.room.room_id} ${MessageConstant.MOVE_CODE} ${state.user.id_user} ${JSON.stringify(moveInfo)}`;
         send(mess);
     }
+    const sendMessageToServer = (mess) =>{
+        const state = store.getState();
+         const message = `${state.room.room_id} ${MessageConstant.MESSAGE_CODE} ${state.user.id_user} ${mess}`;
+        send(message);
+    }
     // const sendJoinRoom =  (roomID,)
-    return {sendMove, update, registerObserver,send};
+    return {sendMove, update, registerObserver,send,sendMessageToServer};
 })();
 export default MessageRelayer;
 // Every time receive message M from socket.

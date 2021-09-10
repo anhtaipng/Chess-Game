@@ -45,7 +45,12 @@ public class ChessGameView {
         sendTo2Players("GAME_ENDED " + gameEndType);
     }
 
-    public void signalErrorGame(){
+    public void signalErrorGame(String errorMessage){
         sendTo2Players(GAME_ERROR);
+    }
+    public void notifyMoveError(String playerWhoMakeErrorMove,String errorMessage){
+        System.out.println("The player :" + playerWhoMakeErrorMove +" will be notified about erro: " +errorMessage);
+        String message = String.format("%s ErrorMove %s %s", this.room, playerWhoMakeErrorMove, errorMessage);
+        socketSender.sendOnlyUser(playerWhoMakeErrorMove, message);
     }
 }

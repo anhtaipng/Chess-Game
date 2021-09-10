@@ -44,3 +44,7 @@
     background-color: #4d4dee;
     background-size: contain;
 }
+
+.selected{
+    background-color: #2fd96d;
+}

@@ -5,7 +5,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Description;
+import vn.gihot.chess.master.model.exception.IllegalMoveException;
 import vn.gihot.chess.master.model.exception.InvalidPositionFormatException;
+import vn.gihot.chess.master.model.exception.UnSyncedMoveTurnException;
 import vn.gihot.chess.master.model.game.board.Board;
 import vn.gihot.chess.master.model.game.board.BoardHelper;
 import vn.gihot.chess.master.model.game.board.ClassicBoard;
@@ -373,8 +375,8 @@ public class BoardInitTest {
     void testPawnMoveMent() {
         MoveInfo move = new MoveInfo("1", MoveInfo.WHITE_PLAYER, Piece.PAWN, "B2",
                 "B4", "false", "false", "null", "false");
-        board.processMove(move);
         try {
+            board.processMove(move);
             Position expectedPawnPosAfterMove = BoardHelper.getPositionFromCharNum("B4");
             assertTrue(board.getPieceAtPos(expectedPawnPosAfterMove) instanceof Pawn);
         } catch (Exception e) {
@@ -387,8 +389,8 @@ public class BoardInitTest {
     void testPawnMoveMent0() {
         MoveInfo move = new MoveInfo("1", MoveInfo.WHITE_PLAYER, Piece.PAWN, "B2",
                 "B4", "false", "false", "null", "false");
-        board.processMove(move);
         try {
+            board.processMove(move);
             Position expectedPawnPosAfterMove = BoardHelper.getPositionFromCharNum("B4");
             assertTrue(board.getPieceAtPos(expectedPawnPosAfterMove) instanceof Pawn);
         } catch (Exception e) {
@@ -399,13 +401,13 @@ public class BoardInitTest {
     @Test
     @DisplayName("Test pawn move ment")
     void testPawnMoveMent01() {
-        MoveInfo move0 = new MoveInfo("1", MoveInfo.WHITE_PLAYER, Piece.PAWN, "B2",
-                "B4", "false", "false", "null", "false");
-        board.processMove(move0);
-        MoveInfo move1 = new MoveInfo("2", MoveInfo.BLACK_PLAYER, Piece.PAWN, "B7",
-                "B5", "false", "false", "null", "false");
-        board.processMove(move1);
         try {
+            MoveInfo move0 = new MoveInfo("1", MoveInfo.WHITE_PLAYER, Piece.PAWN, "B2",
+                    "B4", "false", "false", "null", "false");
+            board.processMove(move0);
+            MoveInfo move1 = new MoveInfo("2", MoveInfo.BLACK_PLAYER, Piece.PAWN, "B7",
+                    "B5", "false", "false", "null", "false");
+            board.processMove(move1);
             Position expectedPawnPosAfterMove = BoardHelper.getPositionFromCharNum("B5");
             Piece p = board.getPieceAtPos(expectedPawnPosAfterMove);
             assertEquals(expectedPawnPosAfterMove, p.getPosition());
@@ -417,16 +419,16 @@ public class BoardInitTest {
     @Test
     @DisplayName("Test pawn capture left")
     void testPawnMoveMent001() {
-        MoveInfo move = new MoveInfo("1", MoveInfo.WHITE_PLAYER, Piece.PAWN, "E2",
-                "E4", "false", "false", "null", "false");
-        board.processMove(move);
-        MoveInfo move0 = new MoveInfo("2", MoveInfo.BLACK_PLAYER, Piece.PAWN, "D7",
-                "D5", "false", "false", "null", "false");
-        board.processMove(move0);
-        MoveInfo move1 = new MoveInfo("3", MoveInfo.WHITE_PLAYER, Piece.PAWN, "E4",
-                "D5", "false", "false", "null", "false");
-        board.processMove(move1);
         try {
+            MoveInfo move = new MoveInfo("1", MoveInfo.WHITE_PLAYER, Piece.PAWN, "E2",
+                    "E4", "false", "false", "null", "false");
+            board.processMove(move);
+            MoveInfo move0 = new MoveInfo("2", MoveInfo.BLACK_PLAYER, Piece.PAWN, "D7",
+                    "D5", "false", "false", "null", "false");
+            board.processMove(move0);
+            MoveInfo move1 = new MoveInfo("3", MoveInfo.WHITE_PLAYER, Piece.PAWN, "E4",
+                    "D5", "false", "false", "null", "false");
+            board.processMove(move1);
             Position expectedPawnPosAfterMove = BoardHelper.getPositionFromCharNum("B4");
             Position capturedSpot = BoardHelper.getPositionFromCharNum("D5");
             Piece piece = board.getPieceAtPos(capturedSpot);
@@ -440,16 +442,17 @@ public class BoardInitTest {
     @Test
     @DisplayName("Test pawn capture right")
     void testPawnMoveMent002() {
-        MoveInfo move = new MoveInfo("1", MoveInfo.WHITE_PLAYER, Piece.PAWN, "E2",
-                "E4", "false", "false", "null", "false");
-        board.processMove(move);
-        MoveInfo move0 = new MoveInfo("2", MoveInfo.BLACK_PLAYER, Piece.PAWN, "F7",
-                "F5", "false", "false", "null", "false");
-        board.processMove(move0);
-        MoveInfo move1 = new MoveInfo("3", MoveInfo.WHITE_PLAYER, Piece.PAWN, "E4",
-                "F5", "false", "false", "null", "false");
-        board.processMove(move1);
+
         try {
+            MoveInfo move = new MoveInfo("1", MoveInfo.WHITE_PLAYER, Piece.PAWN, "E2",
+                    "E4", "false", "false", "null", "false");
+            board.processMove(move);
+            MoveInfo move0 = new MoveInfo("2", MoveInfo.BLACK_PLAYER, Piece.PAWN, "F7",
+                    "F5", "false", "false", "null", "false");
+            board.processMove(move0);
+            MoveInfo move1 = new MoveInfo("3", MoveInfo.WHITE_PLAYER, Piece.PAWN, "E4",
+                    "F5", "false", "false", "null", "false");
+            board.processMove(move1);
             Position capturedSpot = BoardHelper.getPositionFromCharNum("F5");
             Piece piece = board.getPieceAtPos(capturedSpot);
             assertTrue(piece instanceof Pawn && piece.getType() == Type.WHITE &&
@@ -464,19 +467,20 @@ public class BoardInitTest {
     @Test
     @DisplayName("Test pawn enpassant condition")
     void testPawnMoveMent000() {
-        MoveInfo move = new MoveInfo("1", MoveInfo.WHITE_PLAYER, Piece.PAWN, "E2",
-                "E4", "false", "false", "null", "false");
-        board.processMove(move);
-        MoveInfo move0 = new MoveInfo("2", MoveInfo.BLACK_PLAYER, Piece.PAWN, "F7",
-                "F5", "false", "false", "null", "false");
-        board.processMove(move0);
-        MoveInfo move1 = new MoveInfo("3", MoveInfo.WHITE_PLAYER, Piece.PAWN, "E4",
-                "F5", "false", "false", "null", "false");
-        board.processMove(move1);
-        MoveInfo move2 = new MoveInfo("4", MoveInfo.BLACK_PLAYER, Piece.PAWN, "A7",
-                "A5", "false", "false", "null", "false");
-        board.processMove(move2);
+
         try {
+            MoveInfo move = new MoveInfo("1", MoveInfo.WHITE_PLAYER, Piece.PAWN, "E2",
+                    "E4", "false", "false", "null", "false");
+            board.processMove(move);
+            MoveInfo move0 = new MoveInfo("2", MoveInfo.BLACK_PLAYER, Piece.PAWN, "F7",
+                    "F5", "false", "false", "null", "false");
+            board.processMove(move0);
+            MoveInfo move1 = new MoveInfo("3", MoveInfo.WHITE_PLAYER, Piece.PAWN, "E4",
+                    "F5", "false", "false", "null", "false");
+            board.processMove(move1);
+            MoveInfo move2 = new MoveInfo("4", MoveInfo.BLACK_PLAYER, Piece.PAWN, "A7",
+                    "A5", "false", "false", "null", "false");
+            board.processMove(move2);
             Pawn piece = (Pawn) board.getPieceAtPos(BoardHelper.getPositionFromCharNum("A5"));
             assertTrue(piece.canBeEnpassanted());
         } catch (Exception e) {
@@ -487,22 +491,23 @@ public class BoardInitTest {
     @Test
     @DisplayName("Test pawn enpassant condition")
     void testPawnMoveMent00a() {
-        MoveInfo move = new MoveInfo("1", MoveInfo.WHITE_PLAYER, Piece.PAWN, "E2",
-                "E4", "false", "false", "null", "false");
-        board.processMove(move);
-        MoveInfo move0 = new MoveInfo("2", MoveInfo.BLACK_PLAYER, Piece.PAWN, "F7",
-                "F5", "false", "false", "null", "false");
-        board.processMove(move0);
-        MoveInfo move1 = new MoveInfo("3", MoveInfo.WHITE_PLAYER, Piece.PAWN, "E4",
-                "F5", "false", "false", "null", "false");
-        board.processMove(move1);
-        MoveInfo move2 = new MoveInfo("4", MoveInfo.BLACK_PLAYER, Piece.PAWN, "A7",
-                "A5", "false", "false", "null", "false");
-        board.processMove(move2);
-        MoveInfo move3 = new MoveInfo("5", MoveInfo.WHITE_PLAYER, Piece.PAWN, "G2",
-                "G4", "false", "false", "null", "false");
-        board.processMove(move3);
+
         try {
+            MoveInfo move = new MoveInfo("1", MoveInfo.WHITE_PLAYER, Piece.PAWN, "E2",
+                    "E4", "false", "false", "null", "false");
+            board.processMove(move);
+            MoveInfo move0 = new MoveInfo("2", MoveInfo.BLACK_PLAYER, Piece.PAWN, "F7",
+                    "F5", "false", "false", "null", "false");
+            board.processMove(move0);
+            MoveInfo move1 = new MoveInfo("3", MoveInfo.WHITE_PLAYER, Piece.PAWN, "E4",
+                    "F5", "false", "false", "null", "false");
+            board.processMove(move1);
+            MoveInfo move2 = new MoveInfo("4", MoveInfo.BLACK_PLAYER, Piece.PAWN, "A7",
+                    "A5", "false", "false", "null", "false");
+            board.processMove(move2);
+            MoveInfo move3 = new MoveInfo("5", MoveInfo.WHITE_PLAYER, Piece.PAWN, "G2",
+                    "G4", "false", "false", "null", "false");
+            board.processMove(move3);
             Pawn piece = (Pawn) board.getPieceAtPos(BoardHelper.getPositionFromCharNum("A5"));
             assertFalse(piece.canBeEnpassanted());
         } catch (Exception e) {
@@ -513,22 +518,23 @@ public class BoardInitTest {
     @Test
     @DisplayName("Test pawn enpassant to left")
     void testPawnMoveMent00b() {
-        MoveInfo move = new MoveInfo("1", MoveInfo.WHITE_PLAYER, Piece.PAWN, "E2",
-                "E4", "false", "false", "null", "false");
-        board.processMove(move);
-        MoveInfo move0 = new MoveInfo("2", MoveInfo.BLACK_PLAYER, Piece.PAWN, "F7",
-                "F5", "false", "false", "null", "false");
-        board.processMove(move0);
-        MoveInfo move1 = new MoveInfo("3", MoveInfo.WHITE_PLAYER, Piece.PAWN, "E4",
-                "E5", "false", "false", "null", "false");
-        board.processMove(move1);
-        MoveInfo move2 = new MoveInfo("4", MoveInfo.BLACK_PLAYER, Piece.PAWN, "D7",
-                "D5", "false", "false", "null", "false");
-        board.processMove(move2);
-        MoveInfo move3 = new MoveInfo("5", MoveInfo.WHITE_PLAYER, Piece.PAWN, "E5",
-                "D6", "false", "false", "null", "true");
-        board.processMove(move3);
+
         try {
+            MoveInfo move = new MoveInfo("1", MoveInfo.WHITE_PLAYER, Piece.PAWN, "E2",
+                    "E4", "false", "false", "null", "false");
+            board.processMove(move);
+            MoveInfo move0 = new MoveInfo("2", MoveInfo.BLACK_PLAYER, Piece.PAWN, "F7",
+                    "F5", "false", "false", "null", "false");
+            board.processMove(move0);
+            MoveInfo move1 = new MoveInfo("3", MoveInfo.WHITE_PLAYER, Piece.PAWN, "E4",
+                    "E5", "false", "false", "null", "false");
+            board.processMove(move1);
+            MoveInfo move2 = new MoveInfo("4", MoveInfo.BLACK_PLAYER, Piece.PAWN, "D7",
+                    "D5", "false", "false", "null", "false");
+            board.processMove(move2);
+            MoveInfo move3 = new MoveInfo("5", MoveInfo.WHITE_PLAYER, Piece.PAWN, "E5",
+                    "D6", "false", "false", "null", "true");
+            board.processMove(move3);
             Pawn piece = (Pawn) board.getPieceAtPos(BoardHelper.getPositionFromCharNum("D6"));
             assertFalse(piece.canBeEnpassanted() || piece.canEnPassant());
         } catch (Exception e) {
@@ -538,22 +544,23 @@ public class BoardInitTest {
     @Test
     @DisplayName("Test pawn enpassant to right")
     void testPawnMoveMent00c() {
-        MoveInfo move = new MoveInfo("1", MoveInfo.WHITE_PLAYER, Piece.PAWN, "E2",
-                "E4", "false", "false", "null", "false");
-        board.processMove(move);
-        MoveInfo move0 = new MoveInfo("2", MoveInfo.BLACK_PLAYER, Piece.PAWN, "D7",
-                "D5", "false", "false", "null", "false");
-        board.processMove(move0);
-        MoveInfo move1 = new MoveInfo("3", MoveInfo.WHITE_PLAYER, Piece.PAWN, "E4",
-                "E5", "false", "false", "null", "false");
-        board.processMove(move1);
-        MoveInfo move2 = new MoveInfo("4", MoveInfo.BLACK_PLAYER, Piece.PAWN, "F7",
-                "F5", "false", "false", "null", "false");
-        board.processMove(move2);
-        MoveInfo move3 = new MoveInfo("5", MoveInfo.WHITE_PLAYER, Piece.PAWN, "E5",
-                "F6", "false", "false", "null", "true");
-        board.processMove(move3);
+
         try {
+            MoveInfo move = new MoveInfo("1", MoveInfo.WHITE_PLAYER, Piece.PAWN, "E2",
+                    "E4", "false", "false", "null", "false");
+            board.processMove(move);
+            MoveInfo move0 = new MoveInfo("2", MoveInfo.BLACK_PLAYER, Piece.PAWN, "D7",
+                    "D5", "false", "false", "null", "false");
+            board.processMove(move0);
+            MoveInfo move1 = new MoveInfo("3", MoveInfo.WHITE_PLAYER, Piece.PAWN, "E4",
+                    "E5", "false", "false", "null", "false");
+            board.processMove(move1);
+            MoveInfo move2 = new MoveInfo("4", MoveInfo.BLACK_PLAYER, Piece.PAWN, "F7",
+                    "F5", "false", "false", "null", "false");
+            board.processMove(move2);
+            MoveInfo move3 = new MoveInfo("5", MoveInfo.WHITE_PLAYER, Piece.PAWN, "E5",
+                    "F6", "false", "false", "null", "true");
+            board.processMove(move3);
             Pawn piece = (Pawn) board.getPieceAtPos(BoardHelper.getPositionFromCharNum("F6"));
             assertTrue(piece.getType() == Type.WHITE &&
                     board.getAlivePieceListFromType(Type.BLACK).size() == 15);
@@ -565,45 +572,47 @@ public class BoardInitTest {
     @Test
     @DisplayName("Test pawn capture and promotion")
     void testPawnMoveMent00ac() {
-        Piece capturedRook = board.getPieceAtPos(BoardHelper.getPosFromCoord(8,8));
-        MoveInfo move = new MoveInfo("1", MoveInfo.WHITE_PLAYER, Piece.PAWN, "E2",
-                "E4", "false", "false", "null", "false");
-        board.processMove(move);
-        MoveInfo move0 = new MoveInfo("2", MoveInfo.BLACK_PLAYER, Piece.PAWN, "D7",
-                "D5", "false", "false", "null", "false");
-        board.processMove(move0);
-        MoveInfo move1 = new MoveInfo("3", MoveInfo.WHITE_PLAYER, Piece.PAWN, "E4",
-                "E5", "false", "false", "null", "false");
-        board.processMove(move1);
-        Pawn pawn = null;
+
         try {
+            Piece capturedRook = board.getPieceAtPos(BoardHelper.getPosFromCoord(8,8));
+            MoveInfo move = new MoveInfo("1", MoveInfo.WHITE_PLAYER, Piece.PAWN, "E2",
+                    "E4", "false", "false", "null", "false");
+            board.processMove(move);
+            MoveInfo move0 = new MoveInfo("2", MoveInfo.BLACK_PLAYER, Piece.PAWN, "D7",
+                    "D5", "false", "false", "null", "false");
+            board.processMove(move0);
+            MoveInfo move1 = new MoveInfo("3", MoveInfo.WHITE_PLAYER, Piece.PAWN, "E4",
+                    "E5", "false", "false", "null", "false");
+            board.processMove(move1);
+            Pawn pawn = null;
             pawn = (Pawn) board.getPieceAtPos(BoardHelper.getPositionFromCharNum("E5"));
-        } catch (InvalidPositionFormatException e) {
+            assert pawn != null;
+            System.out.println("Testing Pawn: " + pawn);
+            MoveInfo move2 = new MoveInfo("4", MoveInfo.BLACK_PLAYER, Piece.PAWN, "F7",
+                    "F5", "false", "false", "null", "false");
+            board.processMove(move2);
+            System.out.println("Testing Pawn: " + pawn);
+            MoveInfo move3 = new MoveInfo("5", MoveInfo.WHITE_PLAYER, Piece.PAWN, "E5",
+                    "F6", "false", "false", "null", "true");
+            board.processMove(move3);
+            System.out.println("Testing Pawn: " + pawn);
+            MoveInfo move4 = new MoveInfo("6", MoveInfo.BLACK_PLAYER, Piece.PAWN, "A7",
+                    "A5", "false", "false", "null", "false");
+            board.processMove(move4);
+            System.out.println("Testing Pawn: " + pawn);
+            MoveInfo move5 = new MoveInfo("7", MoveInfo.WHITE_PLAYER, Piece.PAWN, "F6",
+                    "G7", "false", "false", "null", "false");
+            board.processMove(move5);
+            MoveInfo move6 = new MoveInfo("8", MoveInfo.BLACK_PLAYER, Piece.PAWN, "H7",
+                    "H5", "false", "false", "null", "false");
+            board.processMove(move6);
+            MoveInfo move7 = new MoveInfo("9", MoveInfo.WHITE_PLAYER, Piece.PAWN, "G7",
+                    "H8", "false", "true", Piece.QUEEN, "false");
+            board.processMove(move7);
+        } catch (InvalidPositionFormatException | IllegalMoveException | UnSyncedMoveTurnException e) {
             e.printStackTrace();
         }
-        assert pawn != null;
-        System.out.println("Testing Pawn: " + pawn);
-        MoveInfo move2 = new MoveInfo("4", MoveInfo.BLACK_PLAYER, Piece.PAWN, "F7",
-                "F5", "false", "false", "null", "false");
-        board.processMove(move2);
-        System.out.println("Testing Pawn: " + pawn);
-        MoveInfo move3 = new MoveInfo("5", MoveInfo.WHITE_PLAYER, Piece.PAWN, "E5",
-                "F6", "false", "false", "null", "true");
-        board.processMove(move3);
-        System.out.println("Testing Pawn: " + pawn);
-        MoveInfo move4 = new MoveInfo("6", MoveInfo.BLACK_PLAYER, Piece.PAWN, "A7",
-                "A5", "false", "false", "null", "false");
-        board.processMove(move4);
-        System.out.println("Testing Pawn: " + pawn);
-        MoveInfo move5 = new MoveInfo("7", MoveInfo.WHITE_PLAYER, Piece.PAWN, "F6",
-                "G7", "false", "false", "null", "false");
-        board.processMove(move5);
-        MoveInfo move6 = new MoveInfo("8", MoveInfo.BLACK_PLAYER, Piece.PAWN, "H7",
-                "H5", "false", "false", "null", "false");
-        board.processMove(move6);
-        MoveInfo move7 = new MoveInfo("9", MoveInfo.WHITE_PLAYER, Piece.PAWN, "G7",
-                "H8", "false", "true", Piece.QUEEN, "false");
-        board.processMove(move7);
+
         try {
             Piece piece = board.getPieceAtPos(BoardHelper.getPositionFromCharNum("H8"));
             assertTrue(piece.getType() == Type.WHITE && piece instanceof Queen);

@@ -3,7 +3,8 @@ import styles from "./chess.module.css"
 
 const Square = (props) => {
     return (
-        <div tabIndex={props.tabIndex} className={`${styles.square} ${props.isLightSquare? styles.lightSquare : styles.darkSquare}`} style={props.image ?{backgroundImage: `url(${props.image})`}:{}} onClick={() => props.onClick(props.posHashCode)} >
+        <div tabIndex={props.tabIndex} className={`${styles.square} ${props.isLightSquare? styles.lightSquare : styles.darkSquare} ${props.isSelected ? styles.selected : ""}`}
+             style={props.image ?{backgroundImage: `url(${props.image})`}:{}} onClick={() => props.onClick(props.posHashCode)} >
         </div>
     );
 };
