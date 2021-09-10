@@ -48,7 +48,7 @@ public class SocketSender {
             System.out.println(item);
         String room_id = splits[0];
         if (splits[1].equals("Move")){//xu ly move
-            sendMess(room_id, "", "", message);
+//            sendMess(room_id, "", "", message);
 
             Gson gson = new Gson();
             MoveInfo moveInfo = gson.fromJson(splits[3], MoveInfo.class);

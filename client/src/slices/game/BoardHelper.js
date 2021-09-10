@@ -38,7 +38,7 @@ const BoardHelper = (() => {
     }
     function getCharNumFromHashCode(hash){
         const {y, x} = getPosFromHashCode(hash);
-        return `${String.fromCharCode(65 +x)}${y}`;
+        return `${String.fromCharCode(64 +x)}${y}`;
     }
     function getHashCodeFromCharNum(charNumString){
         return getHashCodeFromPos(getPosObjectFromCharNum(charNumString));

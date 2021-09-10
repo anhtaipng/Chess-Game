@@ -4,18 +4,21 @@ import MessageRelayer from "./features/messenger/messageRelayer";
 import { store } from "./app/store";
 
 
-const SocketConfig = (() =>{
-    var connected = false;
-    var client;
-    const connectCreation = () =>{
-        client = Stomp.over(new SockJS('http://localhost:9777/socket', null, null));
-        client.connect({}, (props) => {
+class SocketConfig {
+    constructor() {
+        this.connected = false;
+        this.client = Stomp.over(new SockJS('http://localhost:9777/socket'), null, null);
+    }
+
+    connectCreation(){
+        this.client = Stomp.over(new SockJS('http://localhost:9777/socket', null, null));
+        this.client.connect({}, (props) => {
             const userDisplayName = store.getState().user.id_user;
-            connected = true;
+            this.connected = true;
             console.log("USER ID FOUND:",userDisplayName);
-            client.subscribe('/topic/only-user/' + userDisplayName,
+            this.client.subscribe('/topic/only-user/' + userDisplayName,
             (msg) =>
-            {//day chinh la cho ham update can goi 
+            {
                 console.log(msg.body + '*******\n');
                 MessageRelayer.update(msg.body);
             });
@@ -26,18 +29,19 @@ const SocketConfig = (() =>{
     // const observer =  new MessageObserver(); 
     // observer.registerMessAndCallBack("client_connect",connectCreation);
     // MessageRelayer.registerObserver(observer);
-    
-    
-    const sendMess = (message) => {
-        console.log("Thinh Socket send:", message);
-        if (connected)
-            client.send('/app/user-all',{}, message);
+    getClient(){
+        console.log("Getting the client:", this.client);
+        return this.client;
     }
-  
-    return {connectCreation,sendMess};
-})();
+    sendMess(message){
+        console.log("Thinh Socket send:", message);
+        if (this.connected)
+            this.client.send('/app/user-all',{}, message);
+    }
+}
 
+const socket = new SocketConfig();
+export default socket;
 
-export default SocketConfig;
 
 

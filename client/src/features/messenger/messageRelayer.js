@@ -47,8 +47,10 @@ const MessageRelayer = (() => {
                 dispatch(addSpectator({spectator: parts[2]}));
                 break;
             /* falls through */
+            case MessageConstant.MOVE_CODE:
+                // dispatch(addMove());
             default:
-                console.log("Server gửi tin xàm lol :)");
+                console.log("Redux don't care về message này:)");
         }
     }
     const send = (mess) => {

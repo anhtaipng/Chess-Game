@@ -63,6 +63,7 @@ const initialState = {
     time_player_1: undefined,
     time_player_2: undefined,
     chat_messages: [],
+    move_message:[],
     room_error_mess:undefined
 }
 
@@ -102,6 +103,9 @@ export const roomSlice = createSlice({
         },
         addChatMessage: (state, action) => {
             state.chat_messages.push(action.payload);
+        },
+        addMoveMessage: (state,action) =>{
+            state.move_message.push(action.payload);
         }
     },
     extraReducers: (builder) => {
@@ -128,9 +132,9 @@ export const roomSlice = createSlice({
                 state.room_status = RoomConstant.ROOM_PENDING;
             })
             .addCase(joinRoom.fulfilled, (state, action) => {
-                state.room_id = action.payload.room_id;
-                state.variant = action.payload.game_mode;
-                state.time_mode = action.payload.time_mode;
+                state.room_id = action.payload.room.id;
+                state.variant = action.payload.room.gameMode;
+                state.time_mode = action.payload.timeMode;
                 state.player1 = action.payload.player1;
                 state.player2 = action.payload.player2;
                 state.room_status = RoomConstant.ROOM_PLAYING;

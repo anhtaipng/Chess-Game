@@ -4,11 +4,11 @@ import Square from "./Square";
 import BoardHelper from "../../slices/game/BoardHelper";
 import {Bishop, King, Knight, Pawn, PIECE_CONSTANT, Queen, Rook} from "./Piece";
 import {GameConstant} from "../../slices/game/gameSlice";
-import MessageRelayer from "../messenger/messageRelayer";
+import MessageRelayer, {MessageConstant} from "../messenger/messageRelayer";
 import MoveCreator from "../../slices/game/MoveCreator";
-import MessageObserver from "../messenger/messageObserver";
 import {useSelector} from "react-redux";
 import NotificationCreator from "../alert/NotificationCreator";
+import SocketConfig from "../../SocketConfig";
 
 const isEven = (num) => num % 2 === 0;
 const range = (start, stop, step) => Array.from({length: (stop - start) / step + 1}, (_, i) => start + (i * step));
@@ -23,13 +23,6 @@ const TURN_CONSTANTT = {
     ODD_TURN: "ODD",
     EVEN_TURN:"EVEN",
     SPECTATE_ONLY: "SPEC"
-}
-const initialState = {
-    pieces: new Map(),
-    captured_pieces: [],
-    currentTurn: 1,
-    pieceSrcHashCode: undefined,
-    pieceDestinationHashCode: undefined
 }
 const init = (gameMode) => {
     switch (gameMode) {
@@ -76,6 +69,14 @@ const init = (gameMode) => {
             return initialState;
     }
 }
+const initialState = {
+    pieces: new Map(),
+    captured_pieces: [],
+    currentTurn: 1,
+    pieceSrcHashCode: undefined,
+    pieceDestinationHashCode: undefined
+}
+
 
 const reducer = (state, action) => {
     switch (action.type) {
@@ -101,7 +102,8 @@ const reducer = (state, action) => {
                 pieces_fallen.push(piece_dead);
                 pieces_copy.delete(piece_dest);
             }
-            pieces_copy.delete(piece_src);
+            pieces_copy.delete(piece_src)
+            console.log("Final piece set:", pieceMoved);
             pieces_copy.set(piece_dest, pieceMoved);
             const newTurn = state.currentTurn + 1;
             MessageRelayer.send();
@@ -125,14 +127,41 @@ const GameBoard = () => {
     const thisUser = useSelector(state => state.user.id_user);
     const thisPlayer1 = useSelector(state => state.room.player1);
     const thisPlayer2 = useSelector(state => state.room.player2);
+    // const [finishMove, setFinishMove] = useState(false);
+
     console.log("State of the game Board:", thisUser, thisPlayer2, thisPlayer1);
     useEffect(
         () => {initClassicGame();
-            const messageObserver = new MessageObserver();
-            MessageRelayer.registerObserver(messageObserver);
-            messageObserver.registerMoveCallBack(socketMoveMessageHandler);
+            // const messageObserver = new MessageObserver();
+            // MessageRelayer.registerObserver(messageObserver);
+            // messageObserver.registerMoveCallBack(socketMoveMessageHandler);
         },[]
     );
+
+    // Effect for sending and receiving the move;
+    useEffect(
+        () =>{
+            const topic = "/topic/only-user/" + thisUser;
+            console.log("Socket Config is:",SocketConfig);
+            const handlerReturnObject =  SocketConfig.client.subscribe(topic,(msg)=>{
+                const parts = msg.body.split(" ");
+                console.log("Socket in board receive the parts:",msg ,parts);
+                if (parts[1] === MessageConstant.MOVE_CODE) {
+                    console.log("UseEffect changeing state due to move code...");
+                    const moveInfo = JSON.parse(parts[3]);
+                    socketMoveMessageHandler(moveInfo);
+                }
+            });
+            console.log("The object return from STOMP Handler is:", handlerReturnObject);
+            return () => {
+                // Unsubscribe from the topic
+                handlerReturnObject.unsubscribe();
+            }
+        },[] // Should only subscribe once (This user should not change)
+    )
+
+
+
     const myValidTurn = (() =>{
         console.log("Checking turn");
         if (thisUser === thisPlayer1.playerID) {
@@ -210,8 +239,21 @@ const GameBoard = () => {
                                 const {x, y} = BoardHelper.getPosFromHashCode(hashCode);
                                 const isLightSquare = (isEven(y) && !isEven(x)) || (!isEven(y) && isEven(x));
                                 // ! Unknonw error ?????? why pieces returned undefined ??????
-                                const image = state.pieces.has(hashCode) ? state.pieces.get(hashCode).image : undefined;
-                                console.log("The board is reloaded:",state);
+                                // const image = state.pieces.has(hashCode) ? state.pieces.get(hashCode).image : undefined;
+                                const image = (() =>{
+                                    const mapCopy = new Map(state.pieces);
+                                    if (mapCopy.has(hashCode)) {
+                                        console.log("Piece image return undefined: Piece is not in Map",hashCode, state);
+                                        const piece = mapCopy.get(hashCode);
+                                        console.log("Piece: ", piece);
+                                        return piece.image;
+                                    }
+                                    else{
+                                        // console.log("Piece image return undefined: Piece is not in Map",hashCode, state);
+                                        return undefined;
+                                    }
+                                })();
+                            // console.log("Piece Info",state);
                                 return <Square tabIndex={hashCode.toString()} key={hashCode.toString()}
                                                posHashCode={hashCode}
                                                dispatch={dispatch} isLightSquare={isLightSquare} image={image}

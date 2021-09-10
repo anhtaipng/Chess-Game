@@ -11,6 +11,7 @@
 .containter {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     justify-content: space-between;
     font-size: medium;
     border: black solid;
@@ -42,7 +43,7 @@
     flex-direction: row;
     justify-content: flex-start;
     max-height: var(--max-height-var);
-
+    flex-wrap: wrap;
 }
 
 .rightToolBar{
@@ -51,6 +52,7 @@
     justify-content: flex-end;
     max-height: var(--max-height-var);
     margin-right: 3em;
+    flex-wrap: wrap;
 }
 
 .button{
